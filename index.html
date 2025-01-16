@@ -118,6 +118,22 @@
       .add-task-button:hover {
         background-color: #219150;
       }
+      /* Новая кнопка для сброса задач */
+      .reset-button {
+        display: block;
+        margin: 0 auto 15px auto;
+        padding: 8px 16px;
+        background-color: #c0392b;
+        border: none;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 14px;
+      }
+      .reset-button:hover {
+        background-color: #922b21;
+      }
       ol.task-list {
         padding-left: 20px;
         margin: 0;
@@ -312,6 +328,11 @@
     <div id="app" class="app-container">
       <h1 class="app-title">Список задач</h1>
 
+      <!-- Кнопка для сброса задач (чистый лист с плейлистом) -->
+      <button class="reset-button" @click="resetTasks">
+        Аннулировать — начать с плейлиста
+      </button>
+
       <!-- Новая секция для плейлистов -->
       <div class="playlists-container">
         <h2 class="playlists-title">Готовые Плейлисты</h2>
@@ -366,9 +387,9 @@
         <li
           v-for="(task, index) in filteredTasks"
           :key="task.id"
-          :class="[
-            'task-item',
-            taskStates[task.id],
+          :class="[ 
+            'task-item', 
+            taskStates[task.id], 
             { completed: taskStates[task.id] === 'green' },
             { 'active-timer': hasActiveTimer(task) }
           ]"
@@ -837,7 +858,9 @@
           playlists: predefinedPlaylists, // Плейлисты
           autoStartPlaylists: ["playlist1"], // ID плейлистов для автоматического запуска при старте
           taskPlaybackTimes: {}, // Общее время озвучивания для каждой задачи (в секундах)
-          taskPlaybackStartTimes: {} // Время начала текущего озвучивания для каждой задачи
+          taskPlaybackStartTimes: {}, // Время начала текущего озвучивания для каждой задачи
+          // Флаг для определения, был ли заход на страницу впервые или это перезагрузка
+          isReloaded: performance.navigation.type === performance.navigation.TYPE_RELOAD
         },
         computed: {
           categories() {
@@ -1183,6 +1206,22 @@
               }
             });
           },
+          // Метод для сброса списка задач, оставляя только задачи из выбранного плейлиста (например, playlist1)
+          resetTasks() {
+            // Сбрасываем все данные и оставляем только задачи из выбранного плейлиста
+            this.romaRoutineTasks = [];
+            this.taskStates = {};
+            this.taskTimerIntervals = {};
+            this.taskTimerRemainingTimes = {};
+            this.taskCounts = {};
+            this.taskPlaybackTimes = {};
+            // Запускаем выбранный плейлист (можно изменить на другой плейлист по необходимости)
+            const defaultPlaylist = this.playlists.find(pl => pl.id === "playlist1");
+            if (defaultPlaylist) {
+              this.startPlaylist(defaultPlaylist);
+            }
+            alert("Задачи сброшены. Запущен плейлист по умолчанию.");
+          },
           // Сохранение и загрузка времени озвучивания
           savePlaybackTimes() {
             localStorage.setItem("taskPlaybackTimes", JSON.stringify(this.taskPlaybackTimes));
@@ -1197,7 +1236,12 @@
           },
           // Приветственное сообщение
           playWelcomeMessage() {
-            const welcomeMessage = "Добро пожаловать";
+            let welcomeMessage = "";
+            if (this.isReloaded) {
+              welcomeMessage = "Страница перегружена";
+            } else {
+              welcomeMessage = "Добро пожаловать, начинаем выполнять рутинные действия";
+            }
             const utterance = new SpeechSynthesisUtterance(welcomeMessage);
             utterance.lang = "ru-RU";
             const startTime = Date.now();
