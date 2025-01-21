@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      Список задач на Vue.js - Компактный Нумерованный Макет с Русскоязычной
+      Сортировкой
+    </title>
+    <!-- Манифест приложения -->
+    <link rel="manifest" href="manifest.json" />
+    <!-- Добавьте метатег для цвета темы (опционально) -->
+    <meta name="theme-color" content="#2c3e50" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <style>
+      /* Компактный нумерованный макет с минимальными отступами */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f6f8;
+        margin: 0;
+        padding: 20px;
+      }
+      .app-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      }
+      .app-title {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        font-size: 18px;
+      }
+      /* Новый стиль для секции плейлистов */
+      .playlists-container {
+        margin-bottom: 20px;
+      }
+      .playlists-title {
+        text-align: center;
+        margin-bottom: 10px;
+        color: #2c3e50;
+        font-size: 16px;
+      }
+      .playlist {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #bdc3c7;
+        border-radius: 5px;
+        background-color: #ecf0f1;
+        margin-bottom: 8px;
+      }
+      .playlist-name {
+        font-size: 14px;
+        color: #34495e;
+      }
+      .start-playlist-button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #2980b9;
+        color: #ffffff;
+        transition: background-color 0.3s;
+        font-size: 13px;
+      }
+      .start-playlist-button:hover {
+        background-color: #1f6391;
+      }
+      /* Сортировка по категориям */
+      .sort-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+      }
+      .sort-select {
+        padding: 6px 10px;
+        border: 1px solid #bdc3c7;
+        border-radius: 5px;
+        font-size: 13px;
+        width: 200px;
+      }
+      /* Добавление новой задачи */
+      .add-task-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+      }
+      .add-task-input {
+        width: 60%;
+        padding: 6px 10px;
+        border: 1px solid #bdc3c7;
+        border-radius: 5px 0 0 5px;
+        font-size: 13px;
+      }
+      .add-task-select {
+        padding: 6px 10px;
+        border: 1px solid #bdc3c7;
+        border-radius: 0;
+        font-size: 13px;
+        margin-left: 10px;
+        width: 30%;
+      }
+      .add-task-button {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+        background-color: #27ae60;
+        color: #ffffff;
+        transition: background-color 0.3s;
+        font-size: 13px;
+      }
+      .add-task-button:hover {
+        background-color: #219150;
+      }
+      /* Новая кнопка для сброса задач */
+      .reset-button {
+        display: block;
+        margin: 0 auto 15px auto;
+        padding: 8px 16px;
+        background-color: #c0392b;
+        border: none;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 14px;
+      }
+      .reset-button:hover {
+        background-color: #922b21;
+      }
+      /* Кнопка для сброса памяти */
+      .clear-storage-button {
+        display: block;
+        margin: 0 auto 15px auto;
+        padding: 8px 16px;
+        background-color: #8e44ad;
+        border: none;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 14px;
+      }
+      .clear-storage-button:hover {
+        background-color: #71368a;
+      }
+      ol.task-list {
+        padding-left: 20px;
+        margin: 0;
+      }
+      .task-item {
+        margin-bottom: 5px;
+        padding: 8px;
+        border-radius: 5px;
+        background-color: #fafafa;
+        cursor: pointer;
+        font-size: 13px;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        border-left: 4px solid transparent;
+      }
+      .task-item:hover {
+        background-color: #f0f0f0;
+      }
+      .task-item.completed {
+        text-decoration: line-through;
+        color: #95a5a6;
+      }
+      .task-content {
+        display: flex;
+        align-items: center;
+        flex: 1 1 100%;
+      }
+      .task-number {
+        margin-right: 8px;
+        font-weight: bold;
+      }
+      .color-buttons {
+        display: flex;
+        gap: 6px;
+        margin-top: 5px;
+      }
+      .color-circle {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 1px solid #bdc3c7;
+        transition: border-color 0.3s;
+      }
+      .color-circle.yellow {
+        background-color: #f1c40f;
+      }
+      .color-circle.red {
+        background-color: #e74c3c;
+      }
+      .color-circle.green {
+        background-color: #2ecc71;
+      }
+      /* Изменение фона задачи при выборе цвета */
+      .task-item.yellow {
+        background-color: #f9e79f;
+      }
+      .task-item.red {
+        background-color: #f5b7b1;
+      }
+      .task-item.green {
+        background-color: #abebc6;
+      }
+      /* Статистика */
+      .statistics {
+        margin-top: 20px;
+        text-align: center;
+        color: #2c3e50;
+        font-size: 13px;
+      }
+      .statistics-bar {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .bar {
+        height: 15px;
+        border-radius: 4px;
+        transition: width 0.3s;
+      }
+      .bar.completed {
+        background-color: #2ecc71;
+      }
+      .bar.carried-over {
+        background-color: #e74c3c;
+      }
+      /* Редактирование задач */
+      .edit-input {
+        width: 100%;
+        padding: 4px 8px;
+        font-size: 13px;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+      }
+      /* Добавленный стиль для выпадающего меню */
+      .task-count {
+        margin-left: 10px;
+        margin-top: 5px;
+      }
+      /* Стиль для выбора таймера */
+      .task-timer {
+        margin-left: 10px;
+        margin-top: 5px;
+      }
+      .task-timer select {
+        padding: 4px 8px;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+      /* Стиль для таймера отсчёта */
+      .task-timer-countdown {
+        margin-left: 10px;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #7f8c8d;
+      }
+      /* Новый стиль для отображения времени озвучивания */
+      .task-playback-time {
+        margin-left: 10px;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #7f8c8d;
+      }
+      /* Responsive Design */
+      @media (max-width: 600px) {
+        .add-task-container {
+          flex-direction: column;
+          align-items: center;
+        }
+        .add-task-input {
+          width: 100%;
+          margin-bottom: 8px;
+          border-radius: 5px;
+          border-right: 1px solid #bdc3c7;
+        }
+        .add-task-select {
+          width: 100%;
+          margin-bottom: 8px;
+          border-radius: 5px;
+        }
+        .add-task-button {
+          width: 100%;
+          border-radius: 5px;
+        }
+        .task-item {
+          font-size: 13px;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .color-buttons {
+          margin-top: 5px;
+        }
+        .sort-container {
+          flex-direction: column;
+          align-items: center;
+        }
+        .sort-select {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+        .playlist {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .start-playlist-button {
+          margin-top: 8px;
+          width: 100%;
+        }
+      }
+      /* Добавление стиля для задач с активным таймером */
+      .task-item.active-timer {
+        border-left: 4px solid #3498db;
+      }
+      /* (Опционально) Иконка таймера */
+      .timer-icon {
+        margin-left: 8px;
+        width: 12px;
+        height: 12px;
+        background-image: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjM0M0QzQ0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTggMEg2djZIMHYtNmg4djEweiIvPjwvc3ZnPg==");
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="app-container">
+      <h1 class="app-title">Список задач</h1>
+
+      <!-- Кнопка для сброса задач (чистый лист с плейлистом) -->
+      <button class="reset-button" @click="resetTasks">
+        Аннулировать — начать с плейлиста
+      </button>
+
+      <!-- Новая кнопка для сброса памяти (очистка localStorage) -->
+      <button class="clear-storage-button" @click="clearStorage">
+        Сбросить память и начать сначала
+      </button>
+
+      <!-- Новая секция для плейлистов -->
+      <div class="playlists-container">
+        <h2 class="playlists-title">Готовые Плейлисты</h2>
+        <div v-for="playlist in playlists" :key="playlist.id" class="playlist">
+          <span class="playlist-name">{{ playlist.name }}</span>
+          <button
+            class="start-playlist-button"
+            @click="startPlaylist(playlist)"
+          >
+            Запустить
+          </button>
+        </div>
+      </div>
+
+      <!-- Сортировка по категориям -->
+      <div class="sort-container">
+        <select v-model="selectedCategory" class="sort-select">
+          <option value="">Все категории</option>
+          <option
+            v-for="category in categories"
+            :key="category"
+            :value="category"
+          >
+            {{ categoryTranslations[category] || category }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Добавление новой задачи -->
+      <div class="add-task-container">
+        <input
+          type="text"
+          v-model="newTaskMessage"
+          @keypress.enter="addTask"
+          class="add-task-input"
+          placeholder="Добавить новую задачу..."
+        />
+        <select v-model="newTaskCategory" class="add-task-select">
+          <option
+            v-for="category in categories"
+            :key="category"
+            :value="category"
+          >
+            {{ categoryTranslations[category] || category }}
+          </option>
+        </select>
+        <button @click="addTask" class="add-task-button">➕ Добавить</button>
+      </div>
+
+      <!-- Нумерованный список задач -->
+      <ol class="task-list">
+        <li
+          v-for="(task, index) in filteredTasks"
+          :key="task.id"
+          :class="[ 
+            'task-item', 
+            taskStates[task.id], 
+            { completed: taskStates[task.id] === 'green' },
+            { 'active-timer': hasActiveTimer(task) }
+          ]"
+        >
+          <div class="task-content" @click="toggleTask(task)">
+            <span class="task-number">{{ index + 1 }}.</span>
+            <span>{{ task.message }}</span>
+            <!-- (Опционально) Иконка таймера -->
+            <span v-if="hasActiveTimer(task)" class="timer-icon"></span>
+          </div>
+          <div class="color-buttons">
+            <span
+              class="color-circle yellow"
+              @click.stop="setTaskState(task, 'yellow')"
+            ></span>
+            <span
+              class="color-circle red"
+              @click.stop="setTaskState(task, 'red')"
+            ></span>
+            <span
+              class="color-circle green"
+              @click.stop="setTaskState(task, 'green')"
+            ></span>
+          </div>
+          <!-- Выпадающее меню для выбора количества выполнений -->
+          <div class="task-count">
+            <label :for="'count-' + task.id">Выполнений:</label>
+            <select
+              :id="'count-' + task.id"
+              v-model.number="taskCounts[task.id]"
+              @change="saveTaskCounts"
+            >
+              <option v-for="n in 100" :key="n" :value="n">{{ n }}</option>
+            </select>
+          </div>
+          <!-- Выпадающее меню для выбора таймера -->
+          <div class="task-timer">
+            <label :for="'timer-' + task.id">Таймер:</label>
+            <select
+              :id="'timer-' + task.id"
+              v-model="taskTimerIntervals[task.id]"
+              @change="setTaskTimerInterval(task)"
+            >
+              <option value="none">Без перерыва</option>
+              <option value="1s">Каждую секунду</option>
+              <option value="1m">Каждую минуту</option>
+              <option value="10m">Каждые 10 минут</option>
+              <option value="30m">Каждые полчаса</option>
+              <option value="1h">Каждый час</option>
+            </select>
+          </div>
+          <!-- Таймер отсчёта до следующего воспроизведения -->
+          <div
+            class="task-timer-countdown"
+            v-if="taskTimerIntervals[task.id] !== 'none' && taskStates[task.id] === 'green'"
+          >
+            Осталось: {{ formatTime(taskTimerRemainingTimes[task.id]) }}
+          </div>
+          <!-- Отображение общего времени озвучивания -->
+          <div class="task-playback-time">
+            Время озвучивания: {{ formatTime(taskPlaybackTimes[task.id]) }}
+          </div>
+        </li>
+      </ol>
+
+      <!-- Статистика -->
+      <div class="statistics">
+        <p>Выполненные задачи: {{ completedTasks }}</p>
+        <p>Перенесённые задачи на следующий день: {{ carriedOverTasks }}</p>
+        <p>Общий счёт: {{ totalPoints }} очков</p>
+        <div class="statistics-bar">
+          <div
+            class="bar completed"
+            :style="{ width: completedTasks * 15 + 'px' }"
+          ></div>
+          <div
+            class="bar carried-over"
+            :style="{ width: carriedOverTasks * 15 + 'px' }"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Скрипт регистрации Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+              console.log('Service Worker зарегистрирован с областью:', registration.scope);
+            })
+            .catch(error => {
+              console.error('Ошибка при регистрации Service Worker:', error);
+            });
+        });
+      }
+    </script>
+
+    <script>
+      // Предопределённые задачи
+      const predefinedTasks = [
+        { id: "1", message: "Проснуться", category: "morning" },
+        { id: "2", message: "Умыться", category: "morning" },
+        { id: "3", message: "Приготовить завтрак", category: "morning" },
+        { id: "4", message: "Позавтракать", category: "morning" },
+        { id: "5", message: "Принять таблетки", category: "health" },
+        { id: "6", message: "Отметить, что принял таблетки", category: "health" },
+        { id: "7", message: "Сделать смузи", category: "nutrition" },
+        { id: "8", message: "Отметить, что выпил смузи 500 г", category: "nutrition" },
+        { id: "9", message: "Зарядка", category: "exercise" },
+        { id: "10", message: "Принять душ", category: "personal" },
+        { id: "11", message: "Побриться", category: "personal" },
+        { id: "12", message: "Одеться", category: "personal" },
+        { id: "13", message: "Почистить зубы", category: "personal" },
+        { id: "14", message: "Проверить электронную почту", category: "work" },
+        { id: "15", message: "Подготовить одежду на день", category: "personal" },
+        { id: "16", message: "Подготовка плана на день", category: "work" },
+        { id: "17", message: "Медитация", category: "health" },
+        { id: "18", message: "Выпить воды, отметить, что выпил воды", category: "health" },
+        { id: "19", message: "Удалить волосы на ушах, в носу, поправить брови", category: "personal" },
+        { id: "20", message: "Обрезать ногти", category: "personal" },
+        { id: "21", message: "Принять душ перед выходом", category: "personal" },
+        { id: "22", message: "Почистить зубы перед выходом", category: "personal" },
+        { id: "23", message: "Уборка дома", category: "cleaning" },
+        { id: "24", message: "Навести порядок в вещах", category: "cleaning" },
+        { id: "25", message: "Навести порядок в кармане", category: "cleaning" },
+        { id: "26", message: "Навести порядок в сумке", category: "cleaning" },
+        { id: "27", message: "Заправить постель", category: "cleaning" },
+        { id: "28", message: "Убрать ванную", category: "cleaning" },
+        { id: "29", message: "Навести порядок в шкафчиках в ванной, в зале, на кухне", category: "cleaning" },
+        { id: "30", message: "Подмести под кроватями и диванами", category: "cleaning" },
+        { id: "31", message: "Постирать вещи", category: "cleaning" },
+        { id: "32", message: "Повесить сушиться вещи", category: "cleaning" },
+        { id: "33", message: "Поменять постель, постирать постельное бельё", category: "cleaning" },
+        { id: "34", message: "Убрать балкон", category: "cleaning" },
+        { id: "35", message: "Убрать комнату стирки", category: "cleaning" },
+        { id: "36", message: "Починить и вымыть туалеты и краны", category: "cleaning" },
+        { id: "37", message: "Почистить и подготовить роботы-пылесосы", category: "cleaning" },
+        { id: "38", message: "Положить кошке еду", category: "petCare" },
+        { id: "39", message: "Поменять кошке песок", category: "petCare" },
+        { id: "40", message: "Почистить посудомоечную машину", category: "cleaning" },
+        { id: "41", message: "Протереть все столы, особенно компьютер", category: "cleaning" },
+        { id: "42", message: "Помыть газовую плиту и электроплиту внутри", category: "cleaning" },
+        { id: "43", message: "Сделать круг по дому и выкинуть всё ненужное", category: "cleaning" },
+        { id: "44", message: "Собрать вещи, которые не должны быть на виду, и спрятать", category: "cleaning" },
+        { id: "45", message: "Выучить с ребёнком одно английское слово и один пример на иврите", category: "education" },
+        { id: "46", message: "Сделать с ребёнком пять приседаний и пять отжиманий", category: "exercise" },
+        { id: "47", message: "Уделить время ребёнку 10 минут на всё, что он хочет", category: "family" },
+        { id: "48", message: "Каждый день добавить три новые задачи", category: "personal" },
+        { id: "49", message: "Каждый день улучшай код", category: "personal" },
+        { id: "50", message: "Написать план по программированию", category: "education" },
+        { id: "51", message: "Придумать три новых способа складывать вещи", category: "personalDevelopment" },
+        { id: "52", message: "Запрограммировать сравнение результатов вчерашнего дня", category: "programming" },
+        { id: "53", message: "Попробовать в отдельную папку сделать все задачи", category: "programming" },
+        { id: "54", message: "Разработать свой собственный календарь", category: "programming" },
+        { id: "55", message: "Разработать программу, которая помогает бросить курить", category: "health" },
+        { id: "56", message: "Приготовить обед", category: "cooking" },
+        { id: "57", message: "Приготовить обед на работу/учёбу", category: "cooking" },
+        { id: "58", message: "Засолить капусту", category: "cooking" },
+        { id: "59", message: "Напоить водой", category: "health" },
+        { id: "60", message: "Дать витамины", category: "health" },
+        { id: "61", message: "Проверить, какие гаджеты можно выключить из розетки", category: "electronics" },
+        { id: "62", message: "Разработать программу для красивого складывания вещей", category: "programming" },
+        { id: "63", message: "Начать разработку программы \"Где что лежит\"", category: "programming" },
+        { id: "64", message: "Разработать программу для определения крика в доме", category: "programming" },
+        { id: "65", message: "Выкинуть 10 ненужных вещей", category: "decluttering" },
+        { id: "66", message: "Навести порядок в холодильнике, выкинуть всё, что не нужно", category: "cleaning" },
+        { id: "67", message: "Навести порядок в холодильнике и морозилке", category: "cleaning" },
+        { id: "68", message: "Помыть раковину, микроволновку, электроприборы на кухне", category: "cleaning" },
+        { id: "69", message: "Сделать круг по дому и выкинуть всё ненужное", category: "cleaning" },
+        { id: "70", message: "Собрать вещи, которые не должны быть на виду, и спрятать", category: "cleaning" },
+        { id: "71", message: "Выучить с ребёнком одно английское слово и один пример на иврите", category: "education" },
+        { id: "72", message: "Сделать с ребёнком пять приседаний и пять отжиманий", category: "exercise" },
+        { id: "73", message: "Уделить время ребёнку 10 минут на всё, что он хочет", category: "family" },
+        { id: "74", message: "проверить дневник доктора Изабеллы", category: "work" },
+        { id: "75", message: "сделать смузи для доктора", category: "work" },
+        { id: "76", message: "подать воду", category: "work" },
+        { id: "77", message: "сварить четыре яйца", category: "work" },
+        { id: "78", message: "подать с квашеной капустой и хлебцами из зелёной гречки", category: "work" },
+        { id: "79", message: "поприседай", category: "exercise" },
+        { id: "80", message: "отожмись", category: "exercise" },
+        { id: "81", message: "организовать рабочее место", category: "personalTasksAtWork" },
+        { id: "82", message: "подготовить отчёт для доктора", category: "personalTasksForDoctor" }
+      ];
+
+      // Определение плейлистов
+      const predefinedPlaylists = [
+        {
+          id: "playlist1",
+          name: "Уборка Дома",
+          tasks: [
+            { message: "Уборка дома", timer: "none" },
+            { message: "Напоить водой", timer: "10m" },
+            { message: "Отожмись и приседай 10 раз", timer: "10m" },
+          ],
+        },
+        {
+          id: "playlist2",
+          name: "Утренняя Рутинная",
+          tasks: [
+            { message: "Проснуться", timer: "none" },
+            { message: "Умыться", timer: "none" },
+            { message: "Приготовить завтрак", timer: "none" },
+            { message: "Позавтракать", timer: "none" },
+          ],
+        },
+        {
+          id: "playlist3",
+          name: "Не Делай Это",
+          tasks: [
+            { message: "Не кури", timer: "none" },
+            { message: "Не ешь не полезную еду", timer: "none" },
+            { message: "Приготовить завтрак", timer: "none" },
+            { message: "не смотри в телефон", timer: "1min" },
+          ],
+        }
+      ];
+
+      new Vue({
+        el: "#app",
+        data: {
+          romaRoutineTasks: [],
+          newTaskMessage: "",
+          newTaskCategory: "personal",
+          taskStates: {},
+          taskCounts: {},
+          taskTimerIntervals: {},
+          taskTimerRemainingTimes: {},
+          totalPoints: 0,
+          speechIntervals: {},
+          countdownInterval: null,
+          selectedCategory: "",
+          categoryTranslations: {
+            morning: "Утро",
+            health: "Здоровье",
+            nutrition: "Питание",
+            exercise: "Упражнения",
+            personal: "Личное",
+            work: "Работа",
+            cleaning: "Уборка",
+            petCare: "Уход за животными",
+            education: "Образование",
+            family: "Семья",
+            personalDevelopment: "Личное развитие",
+            programming: "Программирование",
+            cooking: "Готовка",
+            decluttering: "Разборка",
+            electronics: "Электроника",
+            personalTasksAtWork: "Личные задачи на работе",
+            personalTasksForDoctor: "Личные задачи для доктора",
+            playlist: "Плейлист"
+          },
+          playlists: predefinedPlaylists,
+          autoStartPlaylists: ["playlist1"],
+          taskPlaybackTimes: {},
+          taskPlaybackStartTimes: {},
+          isReloaded: performance.navigation.type === performance.navigation.TYPE_RELOAD
+        },
+        computed: {
+          categories() {
+            const cats = this.romaRoutineTasks.map((task) => task.category);
+            return [...new Set(cats)];
+          },
+          filteredTasks() {
+            let tasks = this.romaRoutineTasks;
+            if (this.selectedCategory !== "") {
+              tasks = tasks.filter(
+                (task) => task.category === this.selectedCategory
+              );
+            }
+            tasks = tasks.slice().sort((a, b) => {
+              const aActive = this.hasActiveTimer(a);
+              const bActive = this.hasActiveTimer(b);
+              if (aActive === bActive) return 0;
+              return aActive ? -1 : 1;
+            });
+            return tasks;
+          },
+          completedTasks() {
+            return Object.values(this.taskStates).filter(
+              (state) => state === "green"
+            ).length;
+          },
+          carriedOverTasks() {
+            return Object.values(this.taskStates).filter(
+              (state) => state === "red"
+            ).length;
+          }
+        },
+        methods: {
+          capitalizeFirstLetter(word) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          },
+          loadTasks() {
+            const savedTasks = JSON.parse(localStorage.getItem("romaRoutineTasks"));
+            if (savedTasks && Array.isArray(savedTasks) && savedTasks.length > 0) {
+              this.romaRoutineTasks = savedTasks;
+            } else {
+              this.romaRoutineTasks = predefinedTasks;
+              localStorage.setItem("romaRoutineTasks", JSON.stringify(this.romaRoutineTasks));
+            }
+          },
+          saveTasks() {
+            localStorage.setItem("romaRoutineTasks", JSON.stringify(this.romaRoutineTasks));
+          },
+          toggleTask(task) {
+            if (this.taskStates[task.id] === "green") {
+              this.$set(this.taskStates, task.id, "");
+              this.stopSpeech(task.id);
+              this.totalPoints -= 10;
+              localStorage.setItem("totalPoints", this.totalPoints);
+              this.taskTimerRemainingTimes[task.id] = 0;
+            } else if (this.taskStates[task.id] === "red") {
+              this.$set(this.taskStates, task.id, "");
+            } else {
+              this.$set(this.taskStates, task.id, "green");
+              this.startSpeech(task);
+              this.totalPoints += 10;
+              localStorage.setItem("totalPoints", this.totalPoints);
+              if (this.taskTimerIntervals[task.id] !== "none") {
+                this.initializeTaskTimer(task);
+              }
+            }
+            this.saveStates();
+          },
+          setTaskState(task, state) {
+            const prevState = this.taskStates[task.id];
+            this.$set(this.taskStates, task.id, state);
+
+            if (state === "green") {
+              if (prevState !== "green") {
+                this.totalPoints += 10;
+                this.startSpeech(task);
+                if (this.taskTimerIntervals[task.id] !== "none") {
+                  this.initializeTaskTimer(task);
+                }
+              }
+            } else if (state === "red") {
+              this.stopSpeech(task.id);
+              this.speakMessage();
+              this.taskTimerRemainingTimes[task.id] = 0;
+            } else if (state === "yellow") {
+              if (prevState === "green") {
+                this.totalPoints -= 10;
+                this.stopSpeech(task.id);
+                this.taskTimerRemainingTimes[task.id] = 0;
+              }
+            }
+
+            if (state !== "green") {
+              this.stopSpeech(task.id);
+              this.taskTimerRemainingTimes[task.id] = 0;
+            }
+
+            localStorage.setItem("totalPoints", this.totalPoints);
+            this.saveStates();
+          },
+          speakMessage() {
+            const message =
+              "Молодец, ты выполнил это задание. Теперь выпей воды, отожмись 20 раз, поприседай 20 раз, напиши сообщение родным и близким, выключи везде свет, если он включен.";
+            const utterance = new SpeechSynthesisUtterance(message);
+            utterance.lang = "ru-RU";
+            speechSynthesis.speak(utterance);
+          },
+          saveStates() {
+            localStorage.setItem("taskStates", JSON.stringify(this.taskStates));
+            localStorage.setItem("taskTimerIntervals", JSON.stringify(this.taskTimerIntervals));
+            localStorage.setItem("totalPoints", this.totalPoints);
+          },
+          startPlaybackTimer(taskId) {
+            this.$set(this.taskPlaybackStartTimes, taskId, Date.now());
+          },
+          stopPlaybackTimer(taskId) {
+            const startTime = this.taskPlaybackStartTimes[taskId];
+            if (startTime) {
+              const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+              this.taskPlaybackTimes[taskId] = (this.taskPlaybackTimes[taskId] || 0) + elapsedSeconds;
+              this.$delete(this.taskPlaybackStartTimes, taskId);
+            }
+          },
+          startSpeech(task) {
+            if (this.speechIntervals[task.id]) {
+              return;
+            }
+            const intervalType = this.taskTimerIntervals[task.id] || "none";
+            this.startPlaybackTimer(task.id);
+            if (intervalType === "none") {
+              const utterance = new SpeechSynthesisUtterance(task.message);
+              utterance.lang = "ru-RU";
+              utterance.onend = () => {
+                this.stopPlaybackTimer(task.id);
+                if (this.taskStates[task.id] === "green" && this.taskTimerIntervals[task.id] === "none") {
+                  this.speechIntervals[task.id] = setTimeout(() => {
+                    this.startSpeech(task);
+                  }, 5000);
+                }
+              };
+              speechSynthesis.speak(utterance);
+            } else {
+              let intervalMs = this.getIntervalMilliseconds(intervalType);
+              if (intervalMs > 0) {
+                const utterance = new SpeechSynthesisUtterance(task.message);
+                utterance.lang = "ru-RU";
+                utterance.onend = () => {
+                  this.stopPlaybackTimer(task.id);
+                };
+                speechSynthesis.speak(utterance);
+                this.startPlaybackTimer(task.id);
+                this.speechIntervals[task.id] = setInterval(() => {
+                  if (this.taskStates[task.id] === "green" && this.taskTimerIntervals[task.id] === intervalType) {
+                    const newUtterance = new SpeechSynthesisUtterance(task.message);
+                    newUtterance.lang = "ru-RU";
+                    newUtterance.onend = () => {
+                      this.stopPlaybackTimer(task.id);
+                    };
+                    speechSynthesis.speak(newUtterance);
+                    this.startPlaybackTimer(task.id);
+                  } else {
+                    this.stopSpeech(task.id);
+                  }
+                }, intervalMs);
+              }
+            }
+          },
+          stopSpeech(taskId) {
+            if (this.speechIntervals[taskId]) {
+              if (this.taskTimerIntervals[taskId] === "none") {
+                clearTimeout(this.speechIntervals[taskId]);
+              } else {
+                clearInterval(this.speechIntervals[taskId]);
+              }
+              this.$delete(this.speechIntervals, taskId);
+            }
+            speechSynthesis.cancel();
+            this.stopPlaybackTimer(taskId);
+          },
+          setTaskTimerInterval(task) {
+            this.stopSpeech(task.id);
+            if (this.taskTimerIntervals[task.id] === "none") {
+              this.taskTimerRemainingTimes[task.id] = 0;
+            } else if (this.taskStates[task.id] === "green") {
+              this.startSpeech(task);
+              this.initializeTaskTimer(task);
+            }
+            this.saveStates();
+          },
+          addTask() {
+            const message = this.newTaskMessage.trim();
+            if (message === "") {
+              return;
+            }
+            const newTask = {
+              id: Date.now().toString(),
+              message: message,
+              category: this.newTaskCategory || "personal"
+            };
+            this.romaRoutineTasks.push(newTask);
+            this.saveTasks();
+            this.$set(this.taskCounts, newTask.id, 1);
+            this.$set(this.taskTimerIntervals, newTask.id, "none");
+            this.$set(this.taskTimerRemainingTimes, newTask.id, 0);
+            this.$set(this.taskPlaybackTimes, newTask.id, 0);
+            this.newTaskMessage = "";
+            this.newTaskCategory = "personal";
+          },
+          saveTaskCounts() {
+            localStorage.setItem("taskCounts", JSON.stringify(this.taskCounts));
+          },
+          initializeTaskCounts() {
+            const counts = {};
+            this.romaRoutineTasks.forEach((task) => {
+              counts[task.id] = 1;
+            });
+            return counts;
+          },
+          initializeTaskTimerIntervals() {
+            const intervals = {};
+            this.romaRoutineTasks.forEach((task) => {
+              intervals[task.id] = "none";
+            });
+            return intervals;
+          },
+          initializeTaskTimer(task) {
+            const intervalSeconds = this.getIntervalSeconds(this.taskTimerIntervals[task.id]);
+            this.$set(this.taskTimerRemainingTimes, task.id, intervalSeconds);
+          },
+          getIntervalSeconds(intervalType) {
+            switch (intervalType) {
+              case "1s": return 1;
+              case "1m": return 60;
+              case "10m": return 600;
+              case "30m": return 1800;
+              case "1h": return 3600;
+              default: return 0;
+            }
+          },
+          getIntervalMilliseconds(intervalType) {
+            switch (intervalType) {
+              case "1s": return 1000;
+              case "1m": return 60000;
+              case "10m": return 600000;
+              case "30m": return 1800000;
+              case "1h": return 3600000;
+              default: return 0;
+            }
+          },
+          formatTime(seconds) {
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return [
+              hrs > 0 ? String(hrs).padStart(2, "0") : null,
+              String(mins).padStart(2, "0"),
+              String(secs).padStart(2, "0")
+            ]
+              .filter(Boolean)
+              .join(":");
+          },
+          updateCountdowns() {
+            Object.keys(this.taskTimerRemainingTimes).forEach((taskId) => {
+              if (this.taskTimerIntervals[taskId] !== "none" && this.taskStates[taskId] === "green") {
+                if (this.taskTimerRemainingTimes[taskId] > 0) {
+                  this.taskTimerRemainingTimes[taskId]--;
+                } else {
+                  const task = this.romaRoutineTasks.find((t) => t.id === taskId);
+                  if (task) {
+                    this.startSpeech(task);
+                    this.resetCountdown(task);
+                  }
+                }
+              }
+            });
+          },
+          resetCountdown(task) {
+            const intervalSeconds = this.getIntervalSeconds(this.taskTimerIntervals[task.id]);
+            this.$set(this.taskTimerRemainingTimes, task.id, intervalSeconds);
+          },
+          hasActiveTimer(task) {
+            return this.taskTimerIntervals[task.id] !== "none" && this.taskStates[task.id] === "green";
+          },
+          startPlaylist(playlist) {
+            playlist.tasks.forEach((playlistTask) => {
+              const taskId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+              const newTask = {
+                id: taskId,
+                message: playlistTask.message,
+                category: "playlist"
+              };
+              this.romaRoutineTasks.push(newTask);
+              this.$set(this.taskTimerIntervals, taskId, playlistTask.timer);
+              this.$set(this.taskTimerRemainingTimes, taskId, this.getIntervalSeconds(playlistTask.timer));
+              this.$set(this.taskCounts, taskId, 1);
+              this.$set(this.taskPlaybackTimes, taskId, 0);
+              this.$set(this.taskStates, taskId, "green");
+              if (playlistTask.timer !== "none") {
+                this.startSpeech(newTask);
+                this.initializeTaskTimer(newTask);
+              } else {
+                this.startSpeech(newTask);
+              }
+            });
+            this.saveTasks();
+          },
+          autoStartPlaylistsMethod() {
+            this.playlists.forEach((playlist) => {
+              if (this.autoStartPlaylists.includes(playlist.id)) {
+                this.startPlaylist(playlist);
+              }
+            });
+          },
+          resetTasks() {
+            this.romaRoutineTasks = [];
+            this.taskStates = {};
+            this.taskTimerIntervals = {};
+            this.taskTimerRemainingTimes = {};
+            this.taskCounts = {};
+            this.taskPlaybackTimes = {};
+            const defaultPlaylist = this.playlists.find(pl => pl.id === "playlist1");
+            if (defaultPlaylist) {
+              this.startPlaylist(defaultPlaylist);
+            }
+          },
+          savePlaybackTimes() {
+            localStorage.setItem("taskPlaybackTimes", JSON.stringify(this.taskPlaybackTimes));
+          },
+          loadPlaybackTimes() {
+            this.taskPlaybackTimes = JSON.parse(localStorage.getItem("taskPlaybackTimes")) || {};
+            this.romaRoutineTasks.forEach((task) => {
+              if (!this.taskPlaybackTimes[task.id]) {
+                this.$set(this.taskPlaybackTimes, task.id, 0);
+              }
+            });
+          },
+          playWelcomeMessage() {
+            let welcomeMessage = "";
+            if (this.isReloaded) {
+              welcomeMessage = "Страница перегружена";
+            } else {
+              welcomeMessage = "Добро пожаловать, начинаем выполнять рутинные действия";
+            }
+            const utterance = new SpeechSynthesisUtterance(welcomeMessage);
+            utterance.lang = "ru-RU";
+            const startTime = Date.now();
+            utterance.onend = () => {
+              const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+              this.$set(this.taskPlaybackTimes, "welcome", elapsedSeconds);
+              this.savePlaybackTimes();
+              console.log("Приветственное сообщение воспроизведено.");
+            };
+            speechSynthesis.speak(utterance);
+          },
+          // Новый метод: очистка памяти и перезагрузка приложения
+          clearStorage() {
+            localStorage.clear();
+            // Перезагружаем страницу, чтобы всё инициализировалось заново
+            location.reload();
+          }
+        },
+        watch: {
+          romaRoutineTasks: {
+            handler() {
+              this.saveTasks();
+            },
+            deep: true
+          },
+          taskStates: {
+            handler() {
+              this.saveStates();
+            },
+            deep: true
+          },
+          taskCounts: {
+            handler() {
+              this.saveTaskCounts();
+            },
+            deep: true
+          },
+          taskTimerIntervals: {
+            handler() {
+              this.saveStates();
+            },
+            deep: true
+          },
+          taskPlaybackTimes: {
+            handler() {
+              this.savePlaybackTimes();
+            },
+            deep: true
+          }
+        },
+        mounted() {
+          this.loadTasks();
+          this.taskStates = JSON.parse(localStorage.getItem("taskStates")) || {};
+          this.taskTimerIntervals = JSON.parse(localStorage.getItem("taskTimerIntervals")) || this.initializeTaskTimerIntervals();
+          this.totalPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
+          this.taskCounts = JSON.parse(localStorage.getItem("taskCounts")) || this.initializeTaskCounts();
+          this.loadPlaybackTimes();
+          this.taskPlaybackStartTimes = {};
+          this.romaRoutineTasks.forEach((task) => {
+            if (this.taskStates[task.id] === "green" && this.taskTimerIntervals[task.id] !== "none") {
+              this.initializeTaskTimer(task);
+              this.startSpeech(task);
+            } else if (this.taskStates[task.id] === "green" && this.taskTimerIntervals[task.id] === "none") {
+              this.startSpeech(task);
+            } else {
+              this.$set(this.taskTimerRemainingTimes, task.id, 0);
+            }
+            if (!this.taskPlaybackTimes[task.id]) {
+              this.$set(this.taskPlaybackTimes, task.id, 0);
+            }
+          });
+          this.autoStartPlaylistsMethod();
+          this.countdownInterval = setInterval(this.updateCountdowns, 1000);
+          this.playWelcomeMessage();
+        },
+        beforeDestroy() {
+          if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+          }
+          Object.keys(this.speechIntervals).forEach((taskId) => {
+            this.stopSpeech(taskId);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
