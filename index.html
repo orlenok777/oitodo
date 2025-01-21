@@ -134,6 +134,22 @@
       .reset-button:hover {
         background-color: #922b21;
       }
+      /* Кнопка для сброса памяти */
+      .clear-storage-button {
+        display: block;
+        margin: 0 auto 15px auto;
+        padding: 8px 16px;
+        background-color: #8e44ad;
+        border: none;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 14px;
+      }
+      .clear-storage-button:hover {
+        background-color: #71368a;
+      }
       ol.task-list {
         padding-left: 20px;
         margin: 0;
@@ -333,6 +349,11 @@
         Аннулировать — начать с плейлиста
       </button>
 
+      <!-- Новая кнопка для сброса памяти (очистка localStorage) -->
+      <button class="clear-storage-button" @click="clearStorage">
+        Сбросить память и начать сначала
+      </button>
+
       <!-- Новая секция для плейлистов -->
       <div class="playlists-container">
         <h2 class="playlists-title">Готовые Плейлисты</h2>
@@ -491,300 +512,88 @@
     <script>
       // Предопределённые задачи
       const predefinedTasks = [
-        // Ваши существующие задачи...
         { id: "1", message: "Проснуться", category: "morning" },
         { id: "2", message: "Умыться", category: "morning" },
         { id: "3", message: "Приготовить завтрак", category: "morning" },
         { id: "4", message: "Позавтракать", category: "morning" },
         { id: "5", message: "Принять таблетки", category: "health" },
-        {
-          id: "6",
-          message: "Отметить, что принял таблетки",
-          category: "health",
-        },
+        { id: "6", message: "Отметить, что принял таблетки", category: "health" },
         { id: "7", message: "Сделать смузи", category: "nutrition" },
-        {
-          id: "8",
-          message: "Отметить, что выпил смузи 500 г",
-          category: "nutrition",
-        },
+        { id: "8", message: "Отметить, что выпил смузи 500 г", category: "nutrition" },
         { id: "9", message: "Зарядка", category: "exercise" },
         { id: "10", message: "Принять душ", category: "personal" },
         { id: "11", message: "Побриться", category: "personal" },
         { id: "12", message: "Одеться", category: "personal" },
         { id: "13", message: "Почистить зубы", category: "personal" },
         { id: "14", message: "Проверить электронную почту", category: "work" },
-        {
-          id: "15",
-          message: "Подготовить одежду на день",
-          category: "personal",
-        },
+        { id: "15", message: "Подготовить одежду на день", category: "personal" },
         { id: "16", message: "Подготовка плана на день", category: "work" },
         { id: "17", message: "Медитация", category: "health" },
-        {
-          id: "18",
-          message: "Выпить воды, отметить, что выпил воды",
-          category: "health",
-        },
-        {
-          id: "19",
-          message: "Удалить волосы на ушах, в носу, поправить брови",
-          category: "personal",
-        },
+        { id: "18", message: "Выпить воды, отметить, что выпил воды", category: "health" },
+        { id: "19", message: "Удалить волосы на ушах, в носу, поправить брови", category: "personal" },
         { id: "20", message: "Обрезать ногти", category: "personal" },
-        {
-          id: "21",
-          message: "Принять душ перед выходом",
-          category: "personal",
-        },
-        {
-          id: "22",
-          message: "Почистить зубы перед выходом",
-          category: "personal",
-        },
+        { id: "21", message: "Принять душ перед выходом", category: "personal" },
+        { id: "22", message: "Почистить зубы перед выходом", category: "personal" },
         { id: "23", message: "Уборка дома", category: "cleaning" },
         { id: "24", message: "Навести порядок в вещах", category: "cleaning" },
-        {
-          id: "25",
-          message: "Навести порядок в кармане",
-          category: "cleaning",
-        },
+        { id: "25", message: "Навести порядок в кармане", category: "cleaning" },
         { id: "26", message: "Навести порядок в сумке", category: "cleaning" },
         { id: "27", message: "Заправить постель", category: "cleaning" },
         { id: "28", message: "Убрать ванную", category: "cleaning" },
-        {
-          id: "29",
-          message: "Навести порядок в шкафчиках в ванной, в зале, на кухне",
-          category: "cleaning",
-        },
-        {
-          id: "30",
-          message: "Подмести под кроватями и диванами",
-          category: "cleaning",
-        },
+        { id: "29", message: "Навести порядок в шкафчиках в ванной, в зале, на кухне", category: "cleaning" },
+        { id: "30", message: "Подмести под кроватями и диванами", category: "cleaning" },
         { id: "31", message: "Постирать вещи", category: "cleaning" },
         { id: "32", message: "Повесить сушиться вещи", category: "cleaning" },
-        {
-          id: "33",
-          message: "Поменять постель, постирать постельное бельё",
-          category: "cleaning",
-        },
+        { id: "33", message: "Поменять постель, постирать постельное бельё", category: "cleaning" },
         { id: "34", message: "Убрать балкон", category: "cleaning" },
         { id: "35", message: "Убрать комнату стирки", category: "cleaning" },
-        {
-          id: "36",
-          message: "Починить и вымыть туалеты и краны",
-          category: "cleaning",
-        },
-        {
-          id: "37",
-          message: "Почистить и подготовить роботы-пылесосы",
-          category: "cleaning",
-        },
+        { id: "36", message: "Починить и вымыть туалеты и краны", category: "cleaning" },
+        { id: "37", message: "Почистить и подготовить роботы-пылесосы", category: "cleaning" },
         { id: "38", message: "Положить кошке еду", category: "petCare" },
         { id: "39", message: "Поменять кошке песок", category: "petCare" },
-        {
-          id: "40",
-          message: "Почистить посудомоечную машину",
-          category: "cleaning",
-        },
-        {
-          id: "41",
-          message: "Протереть все столы, особенно компьютер",
-          category: "cleaning",
-        },
-        {
-          id: "42",
-          message: "Помыть газовую плиту и электроплиту внутри",
-          category: "cleaning",
-        },
-        {
-          id: "43",
-          message: "Сделать круг по дому и выкинуть всё ненужное",
-          category: "cleaning",
-        },
-        {
-          id: "44",
-          message:
-            "Собрать вещи, которые не должны быть на виду, и спрятать",
-          category: "cleaning",
-        },
-        {
-          id: "45",
-          message:
-            "Выучить с ребёнком одно английское слово и один пример на иврите",
-          category: "education",
-        },
-        {
-          id: "46",
-          message: "Сделать с ребёнком пять приседаний и пять отжиманий",
-          category: "exercise",
-        },
-        {
-          id: "47",
-          message: "Уделить время ребёнку 10 минут на всё, что он хочет",
-          category: "family",
-        },
-        {
-          id: "48",
-          message: "Каждый день добавить три новые задачи",
-          category: "personal",
-        },
+        { id: "40", message: "Почистить посудомоечную машину", category: "cleaning" },
+        { id: "41", message: "Протереть все столы, особенно компьютер", category: "cleaning" },
+        { id: "42", message: "Помыть газовую плиту и электроплиту внутри", category: "cleaning" },
+        { id: "43", message: "Сделать круг по дому и выкинуть всё ненужное", category: "cleaning" },
+        { id: "44", message: "Собрать вещи, которые не должны быть на виду, и спрятать", category: "cleaning" },
+        { id: "45", message: "Выучить с ребёнком одно английское слово и один пример на иврите", category: "education" },
+        { id: "46", message: "Сделать с ребёнком пять приседаний и пять отжиманий", category: "exercise" },
+        { id: "47", message: "Уделить время ребёнку 10 минут на всё, что он хочет", category: "family" },
+        { id: "48", message: "Каждый день добавить три новые задачи", category: "personal" },
         { id: "49", message: "Каждый день улучшай код", category: "personal" },
-        {
-          id: "50",
-          message: "Написать план по программированию",
-          category: "education",
-        },
-        {
-          id: "51",
-          message: "Придумать три новых способа складывать вещи",
-          category: "personalDevelopment",
-        },
-        {
-          id: "52",
-          message: "Запрограммировать сравнение результатов вчерашнего дня",
-          category: "programming",
-        },
-        {
-          id: "53",
-          message: "Попробовать в отдельную папку сделать все задачи",
-          category: "programming",
-        },
-        {
-          id: "54",
-          message: "Разработать свой собственный календарь",
-          category: "programming",
-        },
-        {
-          id: "55",
-          message: "Разработать программу, которая помогает бросить курить",
-          category: "health",
-        },
+        { id: "50", message: "Написать план по программированию", category: "education" },
+        { id: "51", message: "Придумать три новых способа складывать вещи", category: "personalDevelopment" },
+        { id: "52", message: "Запрограммировать сравнение результатов вчерашнего дня", category: "programming" },
+        { id: "53", message: "Попробовать в отдельную папку сделать все задачи", category: "programming" },
+        { id: "54", message: "Разработать свой собственный календарь", category: "programming" },
+        { id: "55", message: "Разработать программу, которая помогает бросить курить", category: "health" },
         { id: "56", message: "Приготовить обед", category: "cooking" },
-        {
-          id: "57",
-          message: "Приготовить обед на работу/учёбу",
-          category: "cooking",
-        },
+        { id: "57", message: "Приготовить обед на работу/учёбу", category: "cooking" },
         { id: "58", message: "Засолить капусту", category: "cooking" },
         { id: "59", message: "Напоить водой", category: "health" },
         { id: "60", message: "Дать витамины", category: "health" },
-        {
-          id: "61",
-          message: "Проверить, какие гаджеты можно выключить из розетки",
-          category: "electronics",
-        },
-        {
-          id: "62",
-          message: "Разработать программу для красивого складывания вещей",
-          category: "programming",
-        },
-        {
-          id: "63",
-          message: 'Начать разработку программы "Где что лежит"',
-          category: "programming",
-        },
-        {
-          id: "64",
-          message: "Разработать программу для определения крика в доме",
-          category: "programming",
-        },
-        {
-          id: "65",
-          message: "Выкинуть 10 ненужных вещей",
-          category: "decluttering",
-        },
-        {
-          id: "66",
-          message: "Навести порядок в холодильнике, выкинуть всё, что не нужно",
-          category: "cleaning",
-        },
-        {
-          id: "67",
-          message: "Навести порядок в холодильнике и морозилке",
-          category: "cleaning",
-        },
-        {
-          id: "68",
-          message: "Помыть раковину, микроволновку, электроприборы на кухне",
-          category: "cleaning",
-        },
-        {
-          id: "69",
-          message: "Сделать круг по дому и выкинуть всё ненужное",
-          category: "cleaning",
-        },
-        {
-          id: "70",
-          message: "Собрать вещи, которые не должны быть на виду, и спрятать",
-          category: "cleaning",
-        },
-        {
-          id: "71",
-          message:
-            "Выучить с ребёнком одно английское слово и один пример на иврите",
-          category: "education",
-        },
-        {
-          id: "72",
-          message: "Сделать с ребёнком пять приседаний и пять отжиманий",
-          category: "exercise",
-        },
-        {
-          id: "73",
-          message: "Уделить время ребёнку 10 минут на всё, что он хочет",
-          category: "family",
-        },
-        // Новая задача добавлена ниже
-        {
-          id: "74",
-          message: "проверить дневник доктора Изабеллы",
-          category: "work",
-        },
-        // Добавлены новые задачи в раздел "work"
-        {
-          id: "75",
-          message: "сделать смузи для доктора",
-          category: "work",
-        },
-        {
-          id: "76",
-          message: "подать воду",
-          category: "work",
-        },
-        {
-          id: "77",
-          message: "сварить четыре яйца",
-          category: "work",
-        },
-        {
-          id: "78",
-          message: "подать с квашеной капустой и хлебцами из зелёной гречки",
-          category: "work",
-        },
-        // Добавленные новые задачи
-        {
-          id: "79",
-          message: "поприседай",
-          category: "exercise",
-        },
-        {
-          id: "80",
-          message: "отожмись",
-          category: "exercise",
-        },
-        // Примерные задачи для новых категорий
-        {
-          id: "81",
-          message: "организовать рабочее место",
-          category: "personalTasksAtWork",
-        },
-        {
-          id: "82",
-          message: "подготовить отчёт для доктора",
-          category: "personalTasksForDoctor",
-        }
+        { id: "61", message: "Проверить, какие гаджеты можно выключить из розетки", category: "electronics" },
+        { id: "62", message: "Разработать программу для красивого складывания вещей", category: "programming" },
+        { id: "63", message: "Начать разработку программы \"Где что лежит\"", category: "programming" },
+        { id: "64", message: "Разработать программу для определения крика в доме", category: "programming" },
+        { id: "65", message: "Выкинуть 10 ненужных вещей", category: "decluttering" },
+        { id: "66", message: "Навести порядок в холодильнике, выкинуть всё, что не нужно", category: "cleaning" },
+        { id: "67", message: "Навести порядок в холодильнике и морозилке", category: "cleaning" },
+        { id: "68", message: "Помыть раковину, микроволновку, электроприборы на кухне", category: "cleaning" },
+        { id: "69", message: "Сделать круг по дому и выкинуть всё ненужное", category: "cleaning" },
+        { id: "70", message: "Собрать вещи, которые не должны быть на виду, и спрятать", category: "cleaning" },
+        { id: "71", message: "Выучить с ребёнком одно английское слово и один пример на иврите", category: "education" },
+        { id: "72", message: "Сделать с ребёнком пять приседаний и пять отжиманий", category: "exercise" },
+        { id: "73", message: "Уделить время ребёнку 10 минут на всё, что он хочет", category: "family" },
+        { id: "74", message: "проверить дневник доктора Изабеллы", category: "work" },
+        { id: "75", message: "сделать смузи для доктора", category: "work" },
+        { id: "76", message: "подать воду", category: "work" },
+        { id: "77", message: "сварить четыре яйца", category: "work" },
+        { id: "78", message: "подать с квашеной капустой и хлебцами из зелёной гречки", category: "work" },
+        { id: "79", message: "поприседай", category: "exercise" },
+        { id: "80", message: "отожмись", category: "exercise" },
+        { id: "81", message: "организовать рабочее место", category: "personalTasksAtWork" },
+        { id: "82", message: "подготовить отчёт для доктора", category: "personalTasksForDoctor" }
       ];
 
       // Определение плейлистов
@@ -798,7 +607,6 @@
             { message: "Отожмись и приседай 10 раз", timer: "10m" },
           ],
         },
-        // Вы можете добавить другие плейлисты по необходимости
         {
           id: "playlist2",
           name: "Утренняя Рутинная",
@@ -826,15 +634,15 @@
         data: {
           romaRoutineTasks: [],
           newTaskMessage: "",
-          newTaskCategory: "personal", // Значение по умолчанию для категории новой задачи
+          newTaskCategory: "personal",
           taskStates: {},
-          taskCounts: {}, // Объект для хранения количества выполнений
-          taskTimerIntervals: {}, // Объект для хранения интервалов таймера
-          taskTimerRemainingTimes: {}, // Оставшееся время до следующего напоминания (в секундах)
+          taskCounts: {},
+          taskTimerIntervals: {},
+          taskTimerRemainingTimes: {},
           totalPoints: 0,
-          speechIntervals: {}, // Объект для хранения интервалов озвучивания
-          countdownInterval: null, // Глобальный интервал для обновления таймеров
-          selectedCategory: "", // Выбранная категория для сортировки
+          speechIntervals: {},
+          countdownInterval: null,
+          selectedCategory: "",
           categoryTranslations: {
             morning: "Утро",
             health: "Здоровье",
@@ -855,37 +663,30 @@
             personalTasksForDoctor: "Личные задачи для доктора",
             playlist: "Плейлист"
           },
-          playlists: predefinedPlaylists, // Плейлисты
-          autoStartPlaylists: ["playlist1"], // ID плейлистов для автоматического запуска при старте
-          taskPlaybackTimes: {}, // Общее время озвучивания для каждой задачи (в секундах)
-          taskPlaybackStartTimes: {}, // Время начала текущего озвучивания для каждой задачи
-          // Флаг для определения, был ли заход на страницу впервые или это перезагрузка
+          playlists: predefinedPlaylists,
+          autoStartPlaylists: ["playlist1"],
+          taskPlaybackTimes: {},
+          taskPlaybackStartTimes: {},
           isReloaded: performance.navigation.type === performance.navigation.TYPE_RELOAD
         },
         computed: {
           categories() {
-            // Получаем уникальные категории из задач
             const cats = this.romaRoutineTasks.map((task) => task.category);
             return [...new Set(cats)];
           },
           filteredTasks() {
             let tasks = this.romaRoutineTasks;
-
-            // Фильтрация по выбранной категории
             if (this.selectedCategory !== "") {
               tasks = tasks.filter(
                 (task) => task.category === this.selectedCategory
               );
             }
-
-            // Сортировка: задачи с активными таймерами первыми
             tasks = tasks.slice().sort((a, b) => {
               const aActive = this.hasActiveTimer(a);
               const bActive = this.hasActiveTimer(b);
               if (aActive === bActive) return 0;
               return aActive ? -1 : 1;
             });
-
             return tasks;
           },
           completedTasks() {
@@ -908,7 +709,6 @@
             if (savedTasks && Array.isArray(savedTasks) && savedTasks.length > 0) {
               this.romaRoutineTasks = savedTasks;
             } else {
-              // Если задач нет, инициализируем массив с предопределёнными задачами
               this.romaRoutineTasks = predefinedTasks;
               localStorage.setItem("romaRoutineTasks", JSON.stringify(this.romaRoutineTasks));
             }
@@ -918,23 +718,18 @@
           },
           toggleTask(task) {
             if (this.taskStates[task.id] === "green") {
-              // Если задача была выполнена, отменяем выполнение
               this.$set(this.taskStates, task.id, "");
               this.stopSpeech(task.id);
               this.totalPoints -= 10;
               localStorage.setItem("totalPoints", this.totalPoints);
-              // Останавливаем таймер
               this.taskTimerRemainingTimes[task.id] = 0;
             } else if (this.taskStates[task.id] === "red") {
-              // Если задача помечена как 'red', убираем 'red'
               this.$set(this.taskStates, task.id, "");
             } else {
-              // Если задача не была выполнена, отмечаем её как выполненную
               this.$set(this.taskStates, task.id, "green");
               this.startSpeech(task);
               this.totalPoints += 10;
               localStorage.setItem("totalPoints", this.totalPoints);
-              // Инициализируем таймер, если установлен
               if (this.taskTimerIntervals[task.id] !== "none") {
                 this.initializeTaskTimer(task);
               }
@@ -946,33 +741,26 @@
             this.$set(this.taskStates, task.id, state);
 
             if (state === "green") {
-              // Если помечено как выполненное
               if (prevState !== "green") {
                 this.totalPoints += 10;
                 this.startSpeech(task);
-                // Инициализируем таймер, если установлен
                 if (this.taskTimerIntervals[task.id] !== "none") {
                   this.initializeTaskTimer(task);
                 }
               }
             } else if (state === "red") {
-              // При установке 'red', говорим специальное сообщение
               this.stopSpeech(task.id);
               this.speakMessage();
-              // Останавливаем таймер
               this.taskTimerRemainingTimes[task.id] = 0;
             } else if (state === "yellow") {
-              // При установке 'yellow'
               if (prevState === "green") {
                 this.totalPoints -= 10;
                 this.stopSpeech(task.id);
-                // Останавливаем таймер
                 this.taskTimerRemainingTimes[task.id] = 0;
               }
             }
 
             if (state !== "green") {
-              // Если состояние не 'green', прекращаем озвучивание и таймер
               this.stopSpeech(task.id);
               this.taskTimerRemainingTimes[task.id] = 0;
             }
@@ -992,9 +780,7 @@
             localStorage.setItem("taskTimerIntervals", JSON.stringify(this.taskTimerIntervals));
             localStorage.setItem("totalPoints", this.totalPoints);
           },
-          // Методы для отслеживания времени озвучивания
           startPlaybackTimer(taskId) {
-            // Записываем время начала озвучивания
             this.$set(this.taskPlaybackStartTimes, taskId, Date.now());
           },
           stopPlaybackTimer(taskId) {
@@ -1007,14 +793,11 @@
           },
           startSpeech(task) {
             if (this.speechIntervals[task.id]) {
-              // Если уже существует интервал для этой задачи, не запускаем снова
               return;
             }
             const intervalType = this.taskTimerIntervals[task.id] || "none";
-            // Начинаем отсчет времени озвучивания
             this.startPlaybackTimer(task.id);
             if (intervalType === "none") {
-              // Без перерыва: повторяем с определённым интервалом (например, каждые 5 секунд)
               const utterance = new SpeechSynthesisUtterance(task.message);
               utterance.lang = "ru-RU";
               utterance.onend = () => {
@@ -1027,10 +810,8 @@
               };
               speechSynthesis.speak(utterance);
             } else {
-              // Остальные интервалы
               let intervalMs = this.getIntervalMilliseconds(intervalType);
               if (intervalMs > 0) {
-                // Воспроизводим сразу при первом запуске
                 const utterance = new SpeechSynthesisUtterance(task.message);
                 utterance.lang = "ru-RU";
                 utterance.onend = () => {
@@ -1038,7 +819,6 @@
                 };
                 speechSynthesis.speak(utterance);
                 this.startPlaybackTimer(task.id);
-                // Устанавливаем интервал для последующих воспроизведений
                 this.speechIntervals[task.id] = setInterval(() => {
                   if (this.taskStates[task.id] === "green" && this.taskTimerIntervals[task.id] === intervalType) {
                     const newUtterance = new SpeechSynthesisUtterance(task.message);
@@ -1068,7 +848,6 @@
             this.stopPlaybackTimer(taskId);
           },
           setTaskTimerInterval(task) {
-            // Останавливаем существующие интервалы
             this.stopSpeech(task.id);
             if (this.taskTimerIntervals[task.id] === "none") {
               this.taskTimerRemainingTimes[task.id] = 0;
@@ -1081,7 +860,6 @@
           addTask() {
             const message = this.newTaskMessage.trim();
             if (message === "") {
-              alert("Пожалуйста, введите текст задачи.");
               return;
             }
             const newTask = {
@@ -1173,7 +951,6 @@
           hasActiveTimer(task) {
             return this.taskTimerIntervals[task.id] !== "none" && this.taskStates[task.id] === "green";
           },
-          // Метод для запуска плейлиста
           startPlaylist(playlist) {
             playlist.tasks.forEach((playlistTask) => {
               const taskId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
@@ -1196,9 +973,7 @@
               }
             });
             this.saveTasks();
-            alert(`Плейлист "${playlist.name}" запущен и задачи добавлены.`);
           },
-          // Метод для автоматического запуска плейлистов при загрузке
           autoStartPlaylistsMethod() {
             this.playlists.forEach((playlist) => {
               if (this.autoStartPlaylists.includes(playlist.id)) {
@@ -1206,23 +981,18 @@
               }
             });
           },
-          // Метод для сброса списка задач, оставляя только задачи из выбранного плейлиста (например, playlist1)
           resetTasks() {
-            // Сбрасываем все данные и оставляем только задачи из выбранного плейлиста
             this.romaRoutineTasks = [];
             this.taskStates = {};
             this.taskTimerIntervals = {};
             this.taskTimerRemainingTimes = {};
             this.taskCounts = {};
             this.taskPlaybackTimes = {};
-            // Запускаем выбранный плейлист (можно изменить на другой плейлист по необходимости)
             const defaultPlaylist = this.playlists.find(pl => pl.id === "playlist1");
             if (defaultPlaylist) {
               this.startPlaylist(defaultPlaylist);
             }
-            alert("Задачи сброшены. Запущен плейлист по умолчанию.");
           },
-          // Сохранение и загрузка времени озвучивания
           savePlaybackTimes() {
             localStorage.setItem("taskPlaybackTimes", JSON.stringify(this.taskPlaybackTimes));
           },
@@ -1234,7 +1004,6 @@
               }
             });
           },
-          // Приветственное сообщение
           playWelcomeMessage() {
             let welcomeMessage = "";
             if (this.isReloaded) {
@@ -1252,6 +1021,12 @@
               console.log("Приветственное сообщение воспроизведено.");
             };
             speechSynthesis.speak(utterance);
+          },
+          // Новый метод: очистка памяти и перезагрузка приложения
+          clearStorage() {
+            localStorage.clear();
+            // Перезагружаем страницу, чтобы всё инициализировалось заново
+            location.reload();
           }
         },
         watch: {
