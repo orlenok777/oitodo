@@ -496,14 +496,18 @@
 
     <!-- Скрипт регистрации Service Worker -->
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js')
-            .then(registration => {
-              console.log('Service Worker зарегистрирован с областью:', registration.scope);
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("./sw.js")
+            .then((registration) => {
+              console.log(
+                "Service Worker зарегистрирован с областью:",
+                registration.scope
+              );
             })
-            .catch(error => {
-              console.error('Ошибка при регистрации Service Worker:', error);
+            .catch((error) => {
+              console.error("Ошибка при регистрации Service Worker:", error);
             });
         });
       }
@@ -517,83 +521,269 @@
         { id: "3", message: "Приготовить завтрак", category: "morning" },
         { id: "4", message: "Позавтракать", category: "morning" },
         { id: "5", message: "Принять таблетки", category: "health" },
-        { id: "6", message: "Отметить, что принял таблетки", category: "health" },
+        {
+          id: "6",
+          message: "Отметить, что принял таблетки",
+          category: "health",
+        },
         { id: "7", message: "Сделать смузи", category: "nutrition" },
-        { id: "8", message: "Отметить, что выпил смузи 500 г", category: "nutrition" },
+        {
+          id: "8",
+          message: "Отметить, что выпил смузи 500 г",
+          category: "nutrition",
+        },
         { id: "9", message: "Зарядка", category: "exercise" },
         { id: "10", message: "Принять душ", category: "personal" },
         { id: "11", message: "Побриться", category: "personal" },
         { id: "12", message: "Одеться", category: "personal" },
         { id: "13", message: "Почистить зубы", category: "personal" },
         { id: "14", message: "Проверить электронную почту", category: "work" },
-        { id: "15", message: "Подготовить одежду на день", category: "personal" },
+        {
+          id: "15",
+          message: "Подготовить одежду на день",
+          category: "personal",
+        },
         { id: "16", message: "Подготовка плана на день", category: "work" },
         { id: "17", message: "Медитация", category: "health" },
-        { id: "18", message: "Выпить воды, отметить, что выпил воды", category: "health" },
-        { id: "19", message: "Удалить волосы на ушах, в носу, поправить брови", category: "personal" },
+        {
+          id: "18",
+          message: "Выпить воды, отметить, что выпил воды",
+          category: "health",
+        },
+        {
+          id: "19",
+          message: "Удалить волосы на ушах, в носу, поправить брови",
+          category: "personal",
+        },
         { id: "20", message: "Обрезать ногти", category: "personal" },
-        { id: "21", message: "Принять душ перед выходом", category: "personal" },
-        { id: "22", message: "Почистить зубы перед выходом", category: "personal" },
+        {
+          id: "21",
+          message: "Принять душ перед выходом",
+          category: "personal",
+        },
+        {
+          id: "22",
+          message: "Почистить зубы перед выходом",
+          category: "personal",
+        },
         { id: "23", message: "Уборка дома", category: "cleaning" },
         { id: "24", message: "Навести порядок в вещах", category: "cleaning" },
-        { id: "25", message: "Навести порядок в кармане", category: "cleaning" },
+        {
+          id: "25",
+          message: "Навести порядок в кармане",
+          category: "cleaning",
+        },
         { id: "26", message: "Навести порядок в сумке", category: "cleaning" },
         { id: "27", message: "Заправить постель", category: "cleaning" },
         { id: "28", message: "Убрать ванную", category: "cleaning" },
-        { id: "29", message: "Навести порядок в шкафчиках в ванной, в зале, на кухне", category: "cleaning" },
-        { id: "30", message: "Подмести под кроватями и диванами", category: "cleaning" },
+        {
+          id: "29",
+          message: "Навести порядок в шкафчиках в ванной, в зале, на кухне",
+          category: "cleaning",
+        },
+        {
+          id: "30",
+          message: "Подмести под кроватями и диванами",
+          category: "cleaning",
+        },
         { id: "31", message: "Постирать вещи", category: "cleaning" },
         { id: "32", message: "Повесить сушиться вещи", category: "cleaning" },
-        { id: "33", message: "Поменять постель, постирать постельное бельё", category: "cleaning" },
+        {
+          id: "33",
+          message: "Поменять постель, постирать постельное бельё",
+          category: "cleaning",
+        },
         { id: "34", message: "Убрать балкон", category: "cleaning" },
         { id: "35", message: "Убрать комнату стирки", category: "cleaning" },
-        { id: "36", message: "Починить и вымыть туалеты и краны", category: "cleaning" },
-        { id: "37", message: "Почистить и подготовить роботы-пылесосы", category: "cleaning" },
+        {
+          id: "36",
+          message: "Починить и вымыть туалеты и краны",
+          category: "cleaning",
+        },
+        {
+          id: "37",
+          message: "Почистить и подготовить роботы-пылесосы",
+          category: "cleaning",
+        },
         { id: "38", message: "Положить кошке еду", category: "petCare" },
         { id: "39", message: "Поменять кошке песок", category: "petCare" },
-        { id: "40", message: "Почистить посудомоечную машину", category: "cleaning" },
-        { id: "41", message: "Протереть все столы, особенно компьютер", category: "cleaning" },
-        { id: "42", message: "Помыть газовую плиту и электроплиту внутри", category: "cleaning" },
-        { id: "43", message: "Сделать круг по дому и выкинуть всё ненужное", category: "cleaning" },
-        { id: "44", message: "Собрать вещи, которые не должны быть на виду, и спрятать", category: "cleaning" },
-        { id: "45", message: "Выучить с ребёнком одно английское слово и один пример на иврите", category: "education" },
-        { id: "46", message: "Сделать с ребёнком пять приседаний и пять отжиманий", category: "exercise" },
-        { id: "47", message: "Уделить время ребёнку 10 минут на всё, что он хочет", category: "family" },
-        { id: "48", message: "Каждый день добавить три новые задачи", category: "personal" },
+        {
+          id: "40",
+          message: "Почистить посудомоечную машину",
+          category: "cleaning",
+        },
+        {
+          id: "41",
+          message: "Протереть все столы, особенно компьютер",
+          category: "cleaning",
+        },
+        {
+          id: "42",
+          message: "Помыть газовую плиту и электроплиту внутри",
+          category: "cleaning",
+        },
+        {
+          id: "43",
+          message: "Сделать круг по дому и выкинуть всё ненужное",
+          category: "cleaning",
+        },
+        {
+          id: "44",
+          message: "Собрать вещи, которые не должны быть на виду, и спрятать",
+          category: "cleaning",
+        },
+        {
+          id: "45",
+          message:
+            "Выучить с ребёнком одно английское слово и один пример на иврите",
+          category: "education",
+        },
+        {
+          id: "46",
+          message: "Сделать с ребёнком пять приседаний и пять отжиманий",
+          category: "exercise",
+        },
+        {
+          id: "47",
+          message: "Уделить время ребёнку 10 минут на всё, что он хочет",
+          category: "family",
+        },
+        {
+          id: "48",
+          message: "Каждый день добавить три новые задачи",
+          category: "personal",
+        },
         { id: "49", message: "Каждый день улучшай код", category: "personal" },
-        { id: "50", message: "Написать план по программированию", category: "education" },
-        { id: "51", message: "Придумать три новых способа складывать вещи", category: "personalDevelopment" },
-        { id: "52", message: "Запрограммировать сравнение результатов вчерашнего дня", category: "programming" },
-        { id: "53", message: "Попробовать в отдельную папку сделать все задачи", category: "programming" },
-        { id: "54", message: "Разработать свой собственный календарь", category: "programming" },
-        { id: "55", message: "Разработать программу, которая помогает бросить курить", category: "health" },
+        {
+          id: "50",
+          message: "Написать план по программированию",
+          category: "education",
+        },
+        {
+          id: "51",
+          message: "Придумать три новых способа складывать вещи",
+          category: "personalDevelopment",
+        },
+        {
+          id: "52",
+          message: "Запрограммировать сравнение результатов вчерашнего дня",
+          category: "programming",
+        },
+        {
+          id: "53",
+          message: "Попробовать в отдельную папку сделать все задачи",
+          category: "programming",
+        },
+        {
+          id: "54",
+          message: "Разработать свой собственный календарь",
+          category: "programming",
+        },
+        {
+          id: "55",
+          message: "Разработать программу, которая помогает бросить курить",
+          category: "health",
+        },
         { id: "56", message: "Приготовить обед", category: "cooking" },
-        { id: "57", message: "Приготовить обед на работу/учёбу", category: "cooking" },
+        {
+          id: "57",
+          message: "Приготовить обед на работу/учёбу",
+          category: "cooking",
+        },
         { id: "58", message: "Засолить капусту", category: "cooking" },
         { id: "59", message: "Напоить водой", category: "health" },
         { id: "60", message: "Дать витамины", category: "health" },
-        { id: "61", message: "Проверить, какие гаджеты можно выключить из розетки", category: "electronics" },
-        { id: "62", message: "Разработать программу для красивого складывания вещей", category: "programming" },
-        { id: "63", message: "Начать разработку программы \"Где что лежит\"", category: "programming" },
-        { id: "64", message: "Разработать программу для определения крика в доме", category: "programming" },
-        { id: "65", message: "Выкинуть 10 ненужных вещей", category: "decluttering" },
-        { id: "66", message: "Навести порядок в холодильнике, выкинуть всё, что не нужно", category: "cleaning" },
-        { id: "67", message: "Навести порядок в холодильнике и морозилке", category: "cleaning" },
-        { id: "68", message: "Помыть раковину, микроволновку, электроприборы на кухне", category: "cleaning" },
-        { id: "69", message: "Сделать круг по дому и выкинуть всё ненужное", category: "cleaning" },
-        { id: "70", message: "Собрать вещи, которые не должны быть на виду, и спрятать", category: "cleaning" },
-        { id: "71", message: "Выучить с ребёнком одно английское слово и один пример на иврите", category: "education" },
-        { id: "72", message: "Сделать с ребёнком пять приседаний и пять отжиманий", category: "exercise" },
-        { id: "73", message: "Уделить время ребёнку 10 минут на всё, что он хочет", category: "family" },
-        { id: "74", message: "проверить дневник доктора Изабеллы", category: "work" },
+        {
+          id: "61",
+          message: "Проверить, какие гаджеты можно выключить из розетки",
+          category: "electronics",
+        },
+        {
+          id: "62",
+          message: "Разработать программу для красивого складывания вещей",
+          category: "programming",
+        },
+        {
+          id: "63",
+          message: 'Начать разработку программы "Где что лежит"',
+          category: "programming",
+        },
+        {
+          id: "64",
+          message: "Разработать программу для определения крика в доме",
+          category: "programming",
+        },
+        {
+          id: "65",
+          message: "Выкинуть 10 ненужных вещей",
+          category: "decluttering",
+        },
+        {
+          id: "66",
+          message: "Навести порядок в холодильнике, выкинуть всё, что не нужно",
+          category: "cleaning",
+        },
+        {
+          id: "67",
+          message: "Навести порядок в холодильнике и морозилке",
+          category: "cleaning",
+        },
+        {
+          id: "68",
+          message: "Помыть раковину, микроволновку, электроприборы на кухне",
+          category: "cleaning",
+        },
+        {
+          id: "69",
+          message: "Сделать круг по дому и выкинуть всё ненужное",
+          category: "cleaning",
+        },
+        {
+          id: "70",
+          message: "Собрать вещи, которые не должны быть на виду, и спрятать",
+          category: "cleaning",
+        },
+        {
+          id: "71",
+          message:
+            "Выучить с ребёнком одно английское слово и один пример на иврите",
+          category: "education",
+        },
+        {
+          id: "72",
+          message: "Сделать с ребёнком пять приседаний и пять отжиманий",
+          category: "exercise",
+        },
+        {
+          id: "73",
+          message: "Уделить время ребёнку 10 минут на всё, что он хочет",
+          category: "family",
+        },
+        {
+          id: "74",
+          message: "проверить дневник доктора Изабеллы",
+          category: "work",
+        },
         { id: "75", message: "сделать смузи для доктора", category: "work" },
         { id: "76", message: "подать воду", category: "work" },
         { id: "77", message: "сварить четыре яйца", category: "work" },
-        { id: "78", message: "подать с квашеной капустой и хлебцами из зелёной гречки", category: "work" },
+        {
+          id: "78",
+          message: "подать с квашеной капустой и хлебцами из зелёной гречки",
+          category: "work",
+        },
         { id: "79", message: "поприседай", category: "exercise" },
         { id: "80", message: "отожмись", category: "exercise" },
-        { id: "81", message: "организовать рабочее место", category: "personalTasksAtWork" },
-        { id: "82", message: "подготовить отчёт для доктора", category: "personalTasksForDoctor" }
+        {
+          id: "81",
+          message: "организовать рабочее место",
+          category: "personalTasksAtWork",
+        },
+        {
+          id: "82",
+          message: "подготовить отчёт для доктора",
+          category: "personalTasksForDoctor",
+        },
       ];
 
       // Определение плейлистов
@@ -605,6 +795,11 @@
             { message: "Уборка дома", timer: "none" },
             { message: "Напоить водой", timer: "10m" },
             { message: "Отожмись и приседай 10 раз", timer: "10m" },
+            { message: "Позанимайся резинками", timer: "10m" },
+            {
+              message: "напиши доброе сообщение родным, друзьям !",
+              timer: "10m",
+            },
           ],
         },
         {
@@ -626,7 +821,7 @@
             { message: "Приготовить завтрак", timer: "none" },
             { message: "не смотри в телефон", timer: "1min" },
           ],
-        }
+        },
       ];
 
       new Vue({
@@ -661,13 +856,14 @@
             electronics: "Электроника",
             personalTasksAtWork: "Личные задачи на работе",
             personalTasksForDoctor: "Личные задачи для доктора",
-            playlist: "Плейлист"
+            playlist: "Плейлист",
           },
           playlists: predefinedPlaylists,
           autoStartPlaylists: ["playlist1"],
           taskPlaybackTimes: {},
           taskPlaybackStartTimes: {},
-          isReloaded: performance.navigation.type === performance.navigation.TYPE_RELOAD
+          isReloaded:
+            performance.navigation.type === performance.navigation.TYPE_RELOAD,
         },
         computed: {
           categories() {
@@ -698,23 +894,35 @@
             return Object.values(this.taskStates).filter(
               (state) => state === "red"
             ).length;
-          }
+          },
         },
         methods: {
           capitalizeFirstLetter(word) {
             return word.charAt(0).toUpperCase() + word.slice(1);
           },
           loadTasks() {
-            const savedTasks = JSON.parse(localStorage.getItem("romaRoutineTasks"));
-            if (savedTasks && Array.isArray(savedTasks) && savedTasks.length > 0) {
+            const savedTasks = JSON.parse(
+              localStorage.getItem("romaRoutineTasks")
+            );
+            if (
+              savedTasks &&
+              Array.isArray(savedTasks) &&
+              savedTasks.length > 0
+            ) {
               this.romaRoutineTasks = savedTasks;
             } else {
               this.romaRoutineTasks = predefinedTasks;
-              localStorage.setItem("romaRoutineTasks", JSON.stringify(this.romaRoutineTasks));
+              localStorage.setItem(
+                "romaRoutineTasks",
+                JSON.stringify(this.romaRoutineTasks)
+              );
             }
           },
           saveTasks() {
-            localStorage.setItem("romaRoutineTasks", JSON.stringify(this.romaRoutineTasks));
+            localStorage.setItem(
+              "romaRoutineTasks",
+              JSON.stringify(this.romaRoutineTasks)
+            );
           },
           toggleTask(task) {
             if (this.taskStates[task.id] === "green") {
@@ -777,7 +985,10 @@
           },
           saveStates() {
             localStorage.setItem("taskStates", JSON.stringify(this.taskStates));
-            localStorage.setItem("taskTimerIntervals", JSON.stringify(this.taskTimerIntervals));
+            localStorage.setItem(
+              "taskTimerIntervals",
+              JSON.stringify(this.taskTimerIntervals)
+            );
             localStorage.setItem("totalPoints", this.totalPoints);
           },
           startPlaybackTimer(taskId) {
@@ -786,8 +997,11 @@
           stopPlaybackTimer(taskId) {
             const startTime = this.taskPlaybackStartTimes[taskId];
             if (startTime) {
-              const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-              this.taskPlaybackTimes[taskId] = (this.taskPlaybackTimes[taskId] || 0) + elapsedSeconds;
+              const elapsedSeconds = Math.floor(
+                (Date.now() - startTime) / 1000
+              );
+              this.taskPlaybackTimes[taskId] =
+                (this.taskPlaybackTimes[taskId] || 0) + elapsedSeconds;
               this.$delete(this.taskPlaybackStartTimes, taskId);
             }
           },
@@ -802,7 +1016,10 @@
               utterance.lang = "ru-RU";
               utterance.onend = () => {
                 this.stopPlaybackTimer(task.id);
-                if (this.taskStates[task.id] === "green" && this.taskTimerIntervals[task.id] === "none") {
+                if (
+                  this.taskStates[task.id] === "green" &&
+                  this.taskTimerIntervals[task.id] === "none"
+                ) {
                   this.speechIntervals[task.id] = setTimeout(() => {
                     this.startSpeech(task);
                   }, 5000);
@@ -820,8 +1037,13 @@
                 speechSynthesis.speak(utterance);
                 this.startPlaybackTimer(task.id);
                 this.speechIntervals[task.id] = setInterval(() => {
-                  if (this.taskStates[task.id] === "green" && this.taskTimerIntervals[task.id] === intervalType) {
-                    const newUtterance = new SpeechSynthesisUtterance(task.message);
+                  if (
+                    this.taskStates[task.id] === "green" &&
+                    this.taskTimerIntervals[task.id] === intervalType
+                  ) {
+                    const newUtterance = new SpeechSynthesisUtterance(
+                      task.message
+                    );
                     newUtterance.lang = "ru-RU";
                     newUtterance.onend = () => {
                       this.stopPlaybackTimer(task.id);
@@ -865,7 +1087,7 @@
             const newTask = {
               id: Date.now().toString(),
               message: message,
-              category: this.newTaskCategory || "personal"
+              category: this.newTaskCategory || "personal",
             };
             this.romaRoutineTasks.push(newTask);
             this.saveTasks();
@@ -894,27 +1116,41 @@
             return intervals;
           },
           initializeTaskTimer(task) {
-            const intervalSeconds = this.getIntervalSeconds(this.taskTimerIntervals[task.id]);
+            const intervalSeconds = this.getIntervalSeconds(
+              this.taskTimerIntervals[task.id]
+            );
             this.$set(this.taskTimerRemainingTimes, task.id, intervalSeconds);
           },
           getIntervalSeconds(intervalType) {
             switch (intervalType) {
-              case "1s": return 1;
-              case "1m": return 60;
-              case "10m": return 600;
-              case "30m": return 1800;
-              case "1h": return 3600;
-              default: return 0;
+              case "1s":
+                return 1;
+              case "1m":
+                return 60;
+              case "10m":
+                return 600;
+              case "30m":
+                return 1800;
+              case "1h":
+                return 3600;
+              default:
+                return 0;
             }
           },
           getIntervalMilliseconds(intervalType) {
             switch (intervalType) {
-              case "1s": return 1000;
-              case "1m": return 60000;
-              case "10m": return 600000;
-              case "30m": return 1800000;
-              case "1h": return 3600000;
-              default: return 0;
+              case "1s":
+                return 1000;
+              case "1m":
+                return 60000;
+              case "10m":
+                return 600000;
+              case "30m":
+                return 1800000;
+              case "1h":
+                return 3600000;
+              default:
+                return 0;
             }
           },
           formatTime(seconds) {
@@ -924,18 +1160,23 @@
             return [
               hrs > 0 ? String(hrs).padStart(2, "0") : null,
               String(mins).padStart(2, "0"),
-              String(secs).padStart(2, "0")
+              String(secs).padStart(2, "0"),
             ]
               .filter(Boolean)
               .join(":");
           },
           updateCountdowns() {
             Object.keys(this.taskTimerRemainingTimes).forEach((taskId) => {
-              if (this.taskTimerIntervals[taskId] !== "none" && this.taskStates[taskId] === "green") {
+              if (
+                this.taskTimerIntervals[taskId] !== "none" &&
+                this.taskStates[taskId] === "green"
+              ) {
                 if (this.taskTimerRemainingTimes[taskId] > 0) {
                   this.taskTimerRemainingTimes[taskId]--;
                 } else {
-                  const task = this.romaRoutineTasks.find((t) => t.id === taskId);
+                  const task = this.romaRoutineTasks.find(
+                    (t) => t.id === taskId
+                  );
                   if (task) {
                     this.startSpeech(task);
                     this.resetCountdown(task);
@@ -945,23 +1186,33 @@
             });
           },
           resetCountdown(task) {
-            const intervalSeconds = this.getIntervalSeconds(this.taskTimerIntervals[task.id]);
+            const intervalSeconds = this.getIntervalSeconds(
+              this.taskTimerIntervals[task.id]
+            );
             this.$set(this.taskTimerRemainingTimes, task.id, intervalSeconds);
           },
           hasActiveTimer(task) {
-            return this.taskTimerIntervals[task.id] !== "none" && this.taskStates[task.id] === "green";
+            return (
+              this.taskTimerIntervals[task.id] !== "none" &&
+              this.taskStates[task.id] === "green"
+            );
           },
           startPlaylist(playlist) {
             playlist.tasks.forEach((playlistTask) => {
-              const taskId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+              const taskId =
+                Date.now().toString() + Math.random().toString(36).substr(2, 9);
               const newTask = {
                 id: taskId,
                 message: playlistTask.message,
-                category: "playlist"
+                category: "playlist",
               };
               this.romaRoutineTasks.push(newTask);
               this.$set(this.taskTimerIntervals, taskId, playlistTask.timer);
-              this.$set(this.taskTimerRemainingTimes, taskId, this.getIntervalSeconds(playlistTask.timer));
+              this.$set(
+                this.taskTimerRemainingTimes,
+                taskId,
+                this.getIntervalSeconds(playlistTask.timer)
+              );
               this.$set(this.taskCounts, taskId, 1);
               this.$set(this.taskPlaybackTimes, taskId, 0);
               this.$set(this.taskStates, taskId, "green");
@@ -988,16 +1239,22 @@
             this.taskTimerRemainingTimes = {};
             this.taskCounts = {};
             this.taskPlaybackTimes = {};
-            const defaultPlaylist = this.playlists.find(pl => pl.id === "playlist1");
+            const defaultPlaylist = this.playlists.find(
+              (pl) => pl.id === "playlist1"
+            );
             if (defaultPlaylist) {
               this.startPlaylist(defaultPlaylist);
             }
           },
           savePlaybackTimes() {
-            localStorage.setItem("taskPlaybackTimes", JSON.stringify(this.taskPlaybackTimes));
+            localStorage.setItem(
+              "taskPlaybackTimes",
+              JSON.stringify(this.taskPlaybackTimes)
+            );
           },
           loadPlaybackTimes() {
-            this.taskPlaybackTimes = JSON.parse(localStorage.getItem("taskPlaybackTimes")) || {};
+            this.taskPlaybackTimes =
+              JSON.parse(localStorage.getItem("taskPlaybackTimes")) || {};
             this.romaRoutineTasks.forEach((task) => {
               if (!this.taskPlaybackTimes[task.id]) {
                 this.$set(this.taskPlaybackTimes, task.id, 0);
@@ -1009,13 +1266,16 @@
             if (this.isReloaded) {
               welcomeMessage = "Страница перегружена";
             } else {
-              welcomeMessage = "Добро пожаловать, начинаем выполнять рутинные действия";
+              welcomeMessage =
+                "Добро пожаловать, начинаем выполнять рутинные действия";
             }
             const utterance = new SpeechSynthesisUtterance(welcomeMessage);
             utterance.lang = "ru-RU";
             const startTime = Date.now();
             utterance.onend = () => {
-              const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+              const elapsedSeconds = Math.floor(
+                (Date.now() - startTime) / 1000
+              );
               this.$set(this.taskPlaybackTimes, "welcome", elapsedSeconds);
               this.savePlaybackTimes();
               console.log("Приветственное сообщение воспроизведено.");
@@ -1027,53 +1287,64 @@
             localStorage.clear();
             // Перезагружаем страницу, чтобы всё инициализировалось заново
             location.reload();
-          }
+          },
         },
         watch: {
           romaRoutineTasks: {
             handler() {
               this.saveTasks();
             },
-            deep: true
+            deep: true,
           },
           taskStates: {
             handler() {
               this.saveStates();
             },
-            deep: true
+            deep: true,
           },
           taskCounts: {
             handler() {
               this.saveTaskCounts();
             },
-            deep: true
+            deep: true,
           },
           taskTimerIntervals: {
             handler() {
               this.saveStates();
             },
-            deep: true
+            deep: true,
           },
           taskPlaybackTimes: {
             handler() {
               this.savePlaybackTimes();
             },
-            deep: true
-          }
+            deep: true,
+          },
         },
         mounted() {
           this.loadTasks();
-          this.taskStates = JSON.parse(localStorage.getItem("taskStates")) || {};
-          this.taskTimerIntervals = JSON.parse(localStorage.getItem("taskTimerIntervals")) || this.initializeTaskTimerIntervals();
+          this.taskStates =
+            JSON.parse(localStorage.getItem("taskStates")) || {};
+          this.taskTimerIntervals =
+            JSON.parse(localStorage.getItem("taskTimerIntervals")) ||
+            this.initializeTaskTimerIntervals();
           this.totalPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
-          this.taskCounts = JSON.parse(localStorage.getItem("taskCounts")) || this.initializeTaskCounts();
+          this.taskCounts =
+            JSON.parse(localStorage.getItem("taskCounts")) ||
+            this.initializeTaskCounts();
           this.loadPlaybackTimes();
           this.taskPlaybackStartTimes = {};
           this.romaRoutineTasks.forEach((task) => {
-            if (this.taskStates[task.id] === "green" && this.taskTimerIntervals[task.id] !== "none") {
+            if (
+              this.taskStates[task.id] === "green" &&
+              this.taskTimerIntervals[task.id] !== "none"
+            ) {
               this.initializeTaskTimer(task);
               this.startSpeech(task);
-            } else if (this.taskStates[task.id] === "green" && this.taskTimerIntervals[task.id] === "none") {
+            } else if (
+              this.taskStates[task.id] === "green" &&
+              this.taskTimerIntervals[task.id] === "none"
+            ) {
               this.startSpeech(task);
             } else {
               this.$set(this.taskTimerRemainingTimes, task.id, 0);
@@ -1093,7 +1364,7 @@
           Object.keys(this.speechIntervals).forEach((taskId) => {
             this.stopSpeech(taskId);
           });
-        }
+        },
       });
     </script>
   </body>
