@@ -8,7 +8,7 @@
     </title>
     <!-- Манифест приложения -->
     <link rel="manifest" href="manifest.json" />
-    <!-- Добавьте метатег для цвета темы (опционально) -->
+    <!-- Метатег для цвета темы (опционально) -->
     <meta name="theme-color" content="#2c3e50" />
     <!-- Подключение Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -858,7 +858,7 @@
           totalPoints: 0,
           speechIntervals: {},
           countdownInterval: null,
-          playlistInterval: null, // Добавлен для контроля автостарта
+          playlistInterval: null, // Удалить или оставить, но не использовать
           selectedCategory: "",
           categoryTranslations: {
             morning: "Утро",
@@ -881,7 +881,7 @@
             playlist: "Плейлист",
           },
           playlists: predefinedPlaylists,
-          autoStartPlaylists: ["playlist1"],
+          autoStartPlaylists: [], // Изменено с ["playlist1"] на []
           taskPlaybackTimes: {},
           taskPlaybackStartTimes: {},
           isReloaded:
@@ -1093,7 +1093,7 @@
             this.stopPlaybackTimer(taskId);
           },
           setTaskTimerInterval(task) {
-            this.stopSpeech(task.id);
+            this.stopSpeech(task.id); // Остановить текущие интервалы и тайм-ауты
             if (this.taskTimerIntervals[task.id] === "none") {
               this.taskTimerRemainingTimes[task.id] = 0;
             } else if (this.taskStates[task.id] === "green") {
@@ -1268,13 +1268,8 @@
             });
             this.saveTasks();
           },
-          autoStartPlaylistsMethod() {
-            this.playlists.forEach((playlist) => {
-              if (this.autoStartPlaylists.includes(playlist.id)) {
-                this.startPlaylist(playlist);
-              }
-            });
-          },
+          // Удален метод autoStartPlaylistsMethod, так как он больше не нужен
+
           resetTasks() {
             this.romaRoutineTasks = [];
             this.taskStates = {};
@@ -1282,12 +1277,13 @@
             this.taskTimerRemainingTimes = {};
             this.taskCounts = {};
             this.taskPlaybackTimes = {};
-            const defaultPlaylist = this.playlists.find(
-              (pl) => pl.id === "playlist1"
-            );
-            if (defaultPlaylist) {
-              this.startPlaylist(defaultPlaylist);
-            }
+            // Удален автоматический запуск плейлиста
+            // const defaultPlaylist = this.playlists.find(
+            //   (pl) => pl.id === "playlist1"
+            // );
+            // if (defaultPlaylist) {
+            //   this.startPlaylist(defaultPlaylist);
+            // }
           },
           savePlaybackTimes() {
             localStorage.setItem(
@@ -1429,16 +1425,9 @@
               this.$set(this.taskPlaybackTimes, task.id, 0);
             }
           });
-          this.autoStartPlaylistsMethod();
+          // this.autoStartPlaylistsMethod(); // Удалено или закомментировано
 
-          // Установка интервала для автостарта плейлиста каждые 5 секунд
-          // **Важно:** Уменьшена частота до 5 секунд, чтобы избежать перегрузки
-          this.playlistInterval = setInterval(() => {
-            const playlist = this.playlists.find((pl) => pl.id === "playlist1");
-            if (playlist) {
-              this.startPlaylist(playlist);
-            }
-          }, 5000); // 5000 мс = 5 секунд
+          // Удален автоматический запуск плейлистов
 
           this.countdownInterval = setInterval(this.updateCountdowns, 1000);
           this.playWelcomeMessage();
