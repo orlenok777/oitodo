@@ -158,12 +158,12 @@
         margin: 0;
       }
       .task-item {
-        margin-bottom: 5px;
-        padding: 8px;
+        margin-bottom: 10px; /* Увеличено для лучшей видимости */
+        padding: 10px;
         border-radius: 5px;
         background-color: #fafafa;
         cursor: pointer;
-        font-size: 13px;
+        font-size: 14px;
         transition: background-color 0.3s;
         display: flex;
         align-items: center;
@@ -194,8 +194,8 @@
       }
       .color-circle {
         display: inline-block;
-        width: 10px;
-        height: 10px;
+        width: 12px; /* Увеличен размер для лучшей кликабельности */
+        height: 12px;
         border-radius: 50%;
         cursor: pointer;
         border: 1px solid #bdc3c7;
@@ -225,7 +225,7 @@
         margin-top: 20px;
         text-align: center;
         color: #2c3e50;
-        font-size: 13px;
+        font-size: 14px;
       }
       .statistics-bar {
         display: flex;
@@ -234,7 +234,7 @@
         margin-top: 10px;
       }
       .bar {
-        height: 15px;
+        height: 20px; /* Увеличена высота для лучшей видимости */
         border-radius: 4px;
         transition: width 0.3s;
       }
@@ -304,7 +304,7 @@
           border-radius: 5px;
         }
         .task-item {
-          font-size: 13px;
+          font-size: 14px;
           flex-direction: column;
           align-items: flex-start;
         }
@@ -335,8 +335,8 @@
       /* (Опционально) Иконка таймера */
       .timer-icon {
         margin-left: 8px;
-        width: 12px;
-        height: 12px;
+        width: 16px; /* Увеличен размер для лучшей видимости */
+        height: 16px;
         background-image: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjM0M0QzQ0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTggMEg2djZIMHYtNmg4djEweiIvPjwvc3ZnPg==");
         background-size: contain;
         background-repeat: no-repeat;
@@ -352,18 +352,6 @@
       }
       #qrCode {
         display: inline-block;
-      }
-      /* Скрывать QR-код на десктопах */
-      @media (min-width: 601px) {
-        #qrCodeContainer {
-          display: none;
-        }
-      }
-      /* Показывать QR-код на мобильных устройствах */
-      @media (max-width: 600px) {
-        #qrCodeContainer {
-          display: block;
-        }
       }
     </style>
   </head>
@@ -826,12 +814,12 @@
           name: "Уборка Дома",
           tasks: [
             { message: "Уборка дома", timer: "none" },
-            { message: "Напоить водой", timer: "10m" },
-            { message: "Отожмись и приседай 10 раз", timer: "10m" },
-            { message: "Позанимайся резинками", timer: "10m" },
+            { message: "Напоить водой", timer: "1s" }, // Изменено с "10m" на "1s"
+            { message: "Отожмись и приседай 10 раз", timer: "1s" }, // Изменено с "10m" на "1s"
+            { message: "Позанимайся резинками", timer: "1s" }, // Изменено с "10m" на "1s"
             {
-              message: "напиши доброе сообщение родным, друзьям !",
-              timer: "10m",
+              message: "напиши доброе сообщение родным, друзьям!",
+              timer: "1s", // Изменено с "10m" на "1s"
             },
           ],
         },
@@ -870,6 +858,7 @@
           totalPoints: 0,
           speechIntervals: {},
           countdownInterval: null,
+          playlistInterval: null, // Добавлен для контроля автостарта
           selectedCategory: "",
           categoryTranslations: {
             morning: "Утро",
@@ -1232,7 +1221,27 @@
             );
           },
           startPlaylist(playlist) {
+            // Удаляем предыдущие задачи из этого плейлиста, если они существуют
+            this.romaRoutineTasks = this.romaRoutineTasks.filter(
+              (task) =>
+                task.category !== "playlist" ||
+                !playlist.tasks.some(
+                  (plTask) => plTask.message === task.message
+                )
+            );
+
             playlist.tasks.forEach((playlistTask) => {
+              // Проверяем, существует ли уже задача с таким сообщением и категорией
+              const existingTask = this.romaRoutineTasks.find(
+                (t) =>
+                  t.category === "playlist" &&
+                  t.message === playlistTask.message
+              );
+              if (existingTask) {
+                // Если задача уже существует, пропускаем её добавление
+                return;
+              }
+
               const taskId =
                 Date.now().toString() + Math.random().toString(36).substr(2, 9);
               const newTask = {
@@ -1421,6 +1430,16 @@
             }
           });
           this.autoStartPlaylistsMethod();
+
+          // Установка интервала для автостарта плейлиста каждые 5 секунд
+          // **Важно:** Уменьшена частота до 5 секунд, чтобы избежать перегрузки
+          this.playlistInterval = setInterval(() => {
+            const playlist = this.playlists.find((pl) => pl.id === "playlist1");
+            if (playlist) {
+              this.startPlaylist(playlist);
+            }
+          }, 5000); // 5000 мс = 5 секунд
+
           this.countdownInterval = setInterval(this.updateCountdowns, 1000);
           this.playWelcomeMessage();
 
@@ -1433,6 +1452,9 @@
         beforeDestroy() {
           if (this.countdownInterval) {
             clearInterval(this.countdownInterval);
+          }
+          if (this.playlistInterval) {
+            clearInterval(this.playlistInterval);
           }
           Object.keys(this.speechIntervals).forEach((taskId) => {
             this.stopSpeech(taskId);
