@@ -10,7 +10,10 @@
     <link rel="manifest" href="manifest.json" />
     <!-- Добавьте метатег для цвета темы (опционально) -->
     <meta name="theme-color" content="#2c3e50" />
+    <!-- Подключение Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- Подключение библиотеки QRCode.js через CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
       /* Компактный нумерованный макет с минимальными отступами */
       body {
@@ -338,6 +341,30 @@
         background-size: contain;
         background-repeat: no-repeat;
       }
+      /* Стили для QR-кода */
+      #qrCodeContainer {
+        margin-top: 20px;
+        text-align: center;
+      }
+      #qrCodeContainer p {
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+      #qrCode {
+        display: inline-block;
+      }
+      /* Скрывать QR-код на десктопах */
+      @media (min-width: 601px) {
+        #qrCodeContainer {
+          display: none;
+        }
+      }
+      /* Показывать QR-код на мобильных устройствах */
+      @media (max-width: 600px) {
+        #qrCodeContainer {
+          display: block;
+        }
+      }
     </style>
   </head>
   <body>
@@ -491,6 +518,12 @@
             :style="{ width: carriedOverTasks * 15 + 'px' }"
           ></div>
         </div>
+      </div>
+
+      <!-- Контейнер для QR-кода -->
+      <div id="qrCodeContainer">
+        <p>Сканируйте QR-код, чтобы открыть сайт на вашем устройстве:</p>
+        <div id="qrCode"></div>
       </div>
     </div>
 
@@ -819,7 +852,7 @@
             { message: "Не кури", timer: "none" },
             { message: "Не ешь не полезную еду", timer: "none" },
             { message: "Приготовить завтрак", timer: "none" },
-            { message: "не смотри в телефон", timer: "1min" },
+            { message: "не смотри в телефон", timer: "1m" },
           ],
         },
       ];
@@ -864,6 +897,7 @@
           taskPlaybackStartTimes: {},
           isReloaded:
             performance.navigation.type === performance.navigation.TYPE_RELOAD,
+          wakeLock: null, // Для блокировки экрана
         },
         computed: {
           categories() {
@@ -1288,6 +1322,39 @@
             // Перезагружаем страницу, чтобы всё инициализировалось заново
             location.reload();
           },
+          // Новый метод: запрос блокировки экрана
+          async requestWakeLock() {
+            if ("wakeLock" in navigator) {
+              try {
+                this.wakeLock = await navigator.wakeLock.request("screen");
+                console.log("Wake Lock активирован");
+                this.wakeLock.addEventListener("release", () => {
+                  console.log("Wake Lock освобождён");
+                });
+              } catch (err) {
+                console.error(`${err.name}, ${err.message}`);
+              }
+            } else {
+              console.warn(
+                "Screen Wake Lock API не поддерживается в этом браузере."
+              );
+            }
+          },
+          // Новый метод: генерация QR-кода
+          generateQRCode() {
+            const qrCodeContainer = document.getElementById("qrCode");
+            // Очищаем контейнер перед генерацией (на случай повторного вызова)
+            qrCodeContainer.innerHTML = "";
+            // Генерация QR-кода с использованием QRCode.js
+            new QRCode(qrCodeContainer, {
+              text: window.location.href, // Текущий URL страницы
+              width: 128,
+              height: 128,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+              correctLevel: QRCode.CorrectLevel.H,
+            });
+          },
         },
         watch: {
           romaRoutineTasks: {
@@ -1356,6 +1423,12 @@
           this.autoStartPlaylistsMethod();
           this.countdownInterval = setInterval(this.updateCountdowns, 1000);
           this.playWelcomeMessage();
+
+          // Запрос блокировки экрана
+          this.requestWakeLock();
+
+          // Генерация QR-кода
+          this.generateQRCode();
         },
         beforeDestroy() {
           if (this.countdownInterval) {
@@ -1364,6 +1437,13 @@
           Object.keys(this.speechIntervals).forEach((taskId) => {
             this.stopSpeech(taskId);
           });
+          // Освобождение блокировки экрана при уничтожении компонента
+          if (this.wakeLock) {
+            this.wakeLock.release().then(() => {
+              this.wakeLock = null;
+              console.log("Wake Lock освобождён при уничтожении компонента.");
+            });
+          }
         },
       });
     </script>
