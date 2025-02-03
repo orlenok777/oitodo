@@ -353,6 +353,24 @@
       #qrCode {
         display: inline-block;
       }
+      /* Новый стиль для описания использования сайта */
+      #usage-description {
+        max-width: 800px;
+        margin: 30px auto 0 auto;
+        padding: 20px;
+        background-color: #ecf0f1;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+      }
+      #usage-description h2 {
+        text-align: center;
+        color: #2c3e50;
+      }
+      #usage-description ol {
+        margin-left: 20px;
+      }
     </style>
   </head>
   <body>
@@ -513,6 +531,59 @@
         <p>Сканируйте QR-код, чтобы открыть сайт на вашем устройстве:</p>
         <div id="qrCode"></div>
       </div>
+    </div>
+
+    <!-- Блок с описанием "Как пользоваться сайтом" -->
+    <div id="usage-description">
+      <h2>Как пользоваться сайтом</h2>
+      <ol>
+        <li>
+          Используйте кнопки "Аннулировать" для сброса списка задач и "Сбросить
+          память" для очистки localStorage.
+        </li>
+        <li>
+          Выберите готовый плейлист или добавьте новую задачу в соответствующем
+          разделе.
+        </li>
+        <li>Сортируйте задачи по категориям с помощью выпадающего меню.</li>
+        <li>
+          Обратите внимание: задачи, автоматически помеченные зелёным (текущие
+          выполнения), всегда будут показываться сверху списка.
+        </li>
+        <li>
+          Для мобильного доступа отсканируйте QR-код, который отображается на
+          странице.
+        </li>
+        <li>
+          Автоматический плейлист запустился сразу после загрузки сайта. Его
+          задания включают:
+          <ul>
+            <li>
+              <strong>Пей воду</strong> – задание выполняется автоматически.
+            </li>
+            <li>
+              <strong>Приседай и отжимайся</strong> – задание запускается каждую
+              секунду.
+            </li>
+            <li>
+              <strong>Напиши приятное сообщение родным и близким</strong> –
+              задание запускается автоматически.
+            </li>
+            <li>
+              <strong>Не смотри в телефон</strong> – задание запускается
+              автоматически.
+            </li>
+            <li>
+              <strong>Позанимайся резинками</strong> – новое напоминание,
+              запускающееся автоматически.
+            </li>
+            <li>
+              <strong>Сделай растяжку пока чай пресс</strong> – новое
+              напоминание, запускающееся автоматически.
+            </li>
+          </ul>
+        </li>
+      </ol>
     </div>
 
     <!-- Скрипт регистрации Service Worker -->
@@ -807,19 +878,19 @@
         },
       ];
 
-      // Определение плейлистов
+      // Определение плейлистов, включая обновлённый "Автоматический Плейлист"
       const predefinedPlaylists = [
         {
           id: "playlist1",
           name: "Уборка Дома",
           tasks: [
             { message: "Уборка дома", timer: "none" },
-            { message: "Напоить водой", timer: "1s" }, // Изменено с "10m" на "1s"
-            { message: "Отожмись и приседай 10 раз", timer: "1s" }, // Изменено с "10m" на "1s"
-            { message: "Позанимайся резинками", timer: "1s" }, // Изменено с "10m" на "1s"
+            { message: "Напоить водой", timer: "1s" },
+            { message: "Отожмись и приседай 10 раз", timer: "1s" },
+            { message: "Позанимайся резинками", timer: "1s" },
             {
               message: "напиши доброе сообщение родным, друзьям!",
-              timer: "1s", // Изменено с "10m" на "1s"
+              timer: "1s",
             },
           ],
         },
@@ -840,7 +911,22 @@
             { message: "Не кури", timer: "none" },
             { message: "Не ешь не полезную еду", timer: "none" },
             { message: "Приготовить завтрак", timer: "none" },
-            { message: "не смотри в телефон", timer: "1m" },
+            { message: "не смотри в телефон", timer: "none" },
+          ],
+        },
+        {
+          id: "autoplay",
+          name: "Автоматический Плейлист",
+          tasks: [
+            { message: "Пей воду", timer: "none" },
+            { message: "Приседай и отжимайся", timer: "1s" },
+            {
+              message: "Напиши приятное сообщение родным и близким",
+              timer: "none",
+            },
+            { message: "Не смотри в телефон", timer: "none" },
+            { message: "Позанимайся резинками", timer: "none" },
+            { message: "Сделай растяжку пока чай пресс", timer: "none" },
           ],
         },
       ];
@@ -858,7 +944,7 @@
           totalPoints: 0,
           speechIntervals: {},
           countdownInterval: null,
-          playlistInterval: null, // Удалить или оставить, но не использовать
+          playlistInterval: null,
           selectedCategory: "",
           categoryTranslations: {
             morning: "Утро",
@@ -881,12 +967,12 @@
             playlist: "Плейлист",
           },
           playlists: predefinedPlaylists,
-          autoStartPlaylists: [], // Изменено с ["playlist1"] на []
+          autoStartPlaylists: [],
           taskPlaybackTimes: {},
           taskPlaybackStartTimes: {},
           isReloaded:
             performance.navigation.type === performance.navigation.TYPE_RELOAD,
-          wakeLock: null, // Для блокировки экрана
+          wakeLock: null,
         },
         computed: {
           categories() {
@@ -894,19 +980,20 @@
             return [...new Set(cats)];
           },
           filteredTasks() {
+            // Отсортировать так, чтобы задачи, помеченные "green" (текущие выполнения), были вверху
             let tasks = this.romaRoutineTasks;
             if (this.selectedCategory !== "") {
               tasks = tasks.filter(
                 (task) => task.category === this.selectedCategory
               );
             }
-            tasks = tasks.slice().sort((a, b) => {
-              const aActive = this.hasActiveTimer(a);
-              const bActive = this.hasActiveTimer(b);
-              if (aActive === bActive) return 0;
-              return aActive ? -1 : 1;
+            return tasks.slice().sort((a, b) => {
+              const aGreen = this.taskStates[a.id] === "green";
+              const bGreen = this.taskStates[b.id] === "green";
+              if (aGreen && !bGreen) return -1;
+              if (!aGreen && bGreen) return 1;
+              return 0;
             });
-            return tasks;
           },
           completedTasks() {
             return Object.values(this.taskStates).filter(
@@ -970,7 +1057,6 @@
           setTaskState(task, state) {
             const prevState = this.taskStates[task.id];
             this.$set(this.taskStates, task.id, state);
-
             if (state === "green") {
               if (prevState !== "green") {
                 this.totalPoints += 10;
@@ -990,12 +1076,10 @@
                 this.taskTimerRemainingTimes[task.id] = 0;
               }
             }
-
             if (state !== "green") {
               this.stopSpeech(task.id);
               this.taskTimerRemainingTimes[task.id] = 0;
             }
-
             localStorage.setItem("totalPoints", this.totalPoints);
             this.saveStates();
           },
@@ -1093,7 +1177,7 @@
             this.stopPlaybackTimer(taskId);
           },
           setTaskTimerInterval(task) {
-            this.stopSpeech(task.id); // Остановить текущие интервалы и тайм-ауты
+            this.stopSpeech(task.id);
             if (this.taskTimerIntervals[task.id] === "none") {
               this.taskTimerRemainingTimes[task.id] = 0;
             } else if (this.taskStates[task.id] === "green") {
@@ -1229,7 +1313,6 @@
                   (plTask) => plTask.message === task.message
                 )
             );
-
             playlist.tasks.forEach((playlistTask) => {
               // Проверяем, существует ли уже задача с таким сообщением и категорией
               const existingTask = this.romaRoutineTasks.find(
@@ -1238,10 +1321,8 @@
                   t.message === playlistTask.message
               );
               if (existingTask) {
-                // Если задача уже существует, пропускаем её добавление
                 return;
               }
-
               const taskId =
                 Date.now().toString() + Math.random().toString(36).substr(2, 9);
               const newTask = {
@@ -1268,8 +1349,6 @@
             });
             this.saveTasks();
           },
-          // Удален метод autoStartPlaylistsMethod, так как он больше не нужен
-
           resetTasks() {
             this.romaRoutineTasks = [];
             this.taskStates = {};
@@ -1277,13 +1356,6 @@
             this.taskTimerRemainingTimes = {};
             this.taskCounts = {};
             this.taskPlaybackTimes = {};
-            // Удален автоматический запуск плейлиста
-            // const defaultPlaylist = this.playlists.find(
-            //   (pl) => pl.id === "playlist1"
-            // );
-            // if (defaultPlaylist) {
-            //   this.startPlaylist(defaultPlaylist);
-            // }
           },
           savePlaybackTimes() {
             localStorage.setItem(
@@ -1321,13 +1393,10 @@
             };
             speechSynthesis.speak(utterance);
           },
-          // Новый метод: очистка памяти и перезагрузка приложения
           clearStorage() {
             localStorage.clear();
-            // Перезагружаем страницу, чтобы всё инициализировалось заново
             location.reload();
           },
-          // Новый метод: запрос блокировки экрана
           async requestWakeLock() {
             if ("wakeLock" in navigator) {
               try {
@@ -1345,14 +1414,11 @@
               );
             }
           },
-          // Новый метод: генерация QR-кода
           generateQRCode() {
             const qrCodeContainer = document.getElementById("qrCode");
-            // Очищаем контейнер перед генерацией (на случай повторного вызова)
             qrCodeContainer.innerHTML = "";
-            // Генерация QR-кода с использованием QRCode.js
             new QRCode(qrCodeContainer, {
-              text: window.location.href, // Текущий URL страницы
+              text: window.location.href,
               width: 128,
               height: 128,
               colorDark: "#000000",
@@ -1425,18 +1491,17 @@
               this.$set(this.taskPlaybackTimes, task.id, 0);
             }
           });
-          // this.autoStartPlaylistsMethod(); // Удалено или закомментировано
-
-          // Удален автоматический запуск плейлистов
-
           this.countdownInterval = setInterval(this.updateCountdowns, 1000);
           this.playWelcomeMessage();
-
-          // Запрос блокировки экрана
           this.requestWakeLock();
-
-          // Генерация QR-кода
           this.generateQRCode();
+          // Автоматический запуск плейлиста "Автоматический Плейлист"
+          const autoPlaylist = this.playlists.find(
+            (pl) => pl.id === "autoplay"
+          );
+          if (autoPlaylist) {
+            this.startPlaylist(autoPlaylist);
+          }
         },
         beforeDestroy() {
           if (this.countdownInterval) {
@@ -1448,7 +1513,6 @@
           Object.keys(this.speechIntervals).forEach((taskId) => {
             this.stopSpeech(taskId);
           });
-          // Освобождение блокировки экрана при уничтожении компонента
           if (this.wakeLock) {
             this.wakeLock.release().then(() => {
               this.wakeLock = null;
